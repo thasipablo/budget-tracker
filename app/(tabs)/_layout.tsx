@@ -157,10 +157,12 @@ const styles = StyleSheet.create({
   },
   tabs: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   tab: {
-    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   tabInner: {
     alignItems: 'center',
