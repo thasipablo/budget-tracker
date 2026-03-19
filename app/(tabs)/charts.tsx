@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PieChart, BarChart } from 'react-native-gifted-charts';
 import { startOfMonth, subMonths, endOfMonth, format, startOfYear } from 'date-fns';
 import { getExpensesByCategory, getMonthlyTotals } from '../../src/db/transactions';
@@ -37,6 +38,7 @@ function getPeriodDates(period: Period): { start: string; end: string } {
 
 export default function ChartsScreen() {
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
   const [period, setPeriod] = useState<Period>('month');
   const [pieData, setPieData] = useState<
     { value: number; color: string; text: string; label: string }[]
@@ -87,7 +89,7 @@ export default function ChartsScreen() {
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { paddingTop: insets.top + 8 }]}>
       {/* iOS segmented control */}
       <View style={styles.segmentContainer}>
         <View style={styles.segment}>

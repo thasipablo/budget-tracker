@@ -235,10 +235,10 @@ export default function TabLayout() {
         headerShadowVisible: false,
       }}
     >
-      <Tabs.Screen name="index" options={{ title: t('dashboard') }} />
+      <Tabs.Screen name="index" options={{ title: t('dashboard'), headerShown: false }} />
       <Tabs.Screen name="transactions" options={{ title: t('transactions') }} />
       <Tabs.Screen name="categories" options={{ title: t('categories') }} />
-      <Tabs.Screen name="charts" options={{ title: t('charts') }} />
+      <Tabs.Screen name="charts" options={{ title: t('charts'), headerShown: false }} />
     </Tabs>
   );
 }

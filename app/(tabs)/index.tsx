@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SummaryCard } from '../../src/components/SummaryCard';
 import { TransactionItem } from '../../src/components/TransactionItem';
 import { EmptyState } from '../../src/components/EmptyState';
@@ -17,6 +18,7 @@ import { useI18n } from '../../src/i18n';
 
 export default function DashboardScreen() {
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
   const { summary, load: loadSummary } = useSummary();
   const { transactions, load: loadTransactions } = useTransactions();
 
@@ -28,7 +30,7 @@ export default function DashboardScreen() {
   );
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { paddingTop: insets.top }]}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <SummaryCard summary={summary} />
 
