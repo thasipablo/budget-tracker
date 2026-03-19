@@ -32,6 +32,7 @@ export default function DashboardScreen() {
   return (
     <View style={[styles.screen, { paddingTop: insets.top }]}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+        <Text style={styles.pageTitle}>{t('dashboard')}</Text>
         <SummaryCard summary={summary} />
 
         <View style={styles.sectionHeader}>
@@ -72,6 +73,13 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F7' },
   scroll: { flex: 1 },
   content: { padding: 16, paddingBottom: 20 },
+  pageTitle: {
+    fontSize: 34,
+    fontWeight: '700',
+    color: '#000000',
+    marginBottom: 20,
+    letterSpacing: 0.37,
+  },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

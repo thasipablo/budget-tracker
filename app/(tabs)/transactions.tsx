@@ -8,6 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TransactionItem } from '../../src/components/TransactionItem';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useTransactions } from '../../src/hooks/useTransactions';
@@ -18,6 +19,7 @@ type Filter = 'all' | TransactionType;
 
 export default function TransactionsScreen() {
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
   const [filter, setFilter] = useState<Filter>('all');
   const { transactions, load, remove } = useTransactions();
 
@@ -41,7 +43,10 @@ export default function TransactionsScreen() {
   };
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { paddingTop: insets.top }]}>
+      <View style={styles.titleRow}>
+        <Text style={styles.pageTitle}>{t('transactions')}</Text>
+      </View>
       {/* iOS-style segmented control */}
       <View style={styles.segmentContainer}>
         <View style={styles.segment}>
@@ -89,6 +94,18 @@ export default function TransactionsScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F7' },
+  titleRow: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  pageTitle: {
+    fontSize: 34,
+    fontWeight: '700',
+    color: '#000000',
+    letterSpacing: 0.37,
+    marginBottom: 8,
+  },
   segmentContainer: {
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -97,13 +114,13 @@ const styles = StyleSheet.create({
   segment: {
     flexDirection: 'row',
     backgroundColor: '#E5E5EA',
-    borderRadius: 8,
-    padding: 2,
+    borderRadius: 999,
+    padding: 3,
   },
   segmentBtn: {
     flex: 1,
-    paddingVertical: 7,
-    borderRadius: 7,
+    paddingVertical: 8,
+    borderRadius: 999,
     alignItems: 'center',
   },
   segmentBtnActive: {
@@ -111,7 +128,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowRadius: 3,
     elevation: 2,
   },
   segmentText: { fontSize: 13, fontWeight: '500', color: '#8E8E93' },

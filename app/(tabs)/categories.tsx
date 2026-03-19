@@ -8,8 +8,8 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router, useFocusEffect, useNavigation } from 'expo-router';
-import { useLayoutEffect } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useCategories } from '../../src/hooks/useCategories';
 import { useI18n } from '../../src/i18n';
@@ -19,23 +19,9 @@ type Tab = TransactionType;
 
 export default function CategoriesScreen() {
   const { t } = useI18n();
-  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<Tab>('expense');
   const { categories, load, remove } = useCategories();
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => router.push(`/category/new?type=${activeTab}`)}
-          style={{ marginRight: 16 }}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons name="add" size={28} color="#007AFF" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation, activeTab]);
 
   const tabs: { label: string; value: Tab }[] = [
     { label: t('expenses'), value: 'expense' },
@@ -60,7 +46,16 @@ export default function CategoriesScreen() {
   };
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { paddingTop: insets.top }]}>
+      <View style={styles.titleRow}>
+        <Text style={styles.pageTitle}>{t('categories')}</Text>
+        <TouchableOpacity
+          onPress={() => router.push(`/category/new?type=${activeTab}`)}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Ionicons name="add" size={28} color="#007AFF" />
+        </TouchableOpacity>
+      </View>
       {/* iOS segmented control */}
       <View style={styles.segmentContainer}>
         <View style={styles.segment}>
@@ -82,7 +77,7 @@ export default function CategoriesScreen() {
         data={categories}
         keyExtractor={(c) => c.id.toString()}
         contentContainerStyle={styles.list}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.row}
             onPress={() => router.push(`/category/${item.id}`)}
@@ -91,7 +86,7 @@ export default function CategoriesScreen() {
             <View style={[styles.iconBox, { backgroundColor: item.color + '1A' }]}>
               <Text style={styles.icon}>{item.icon}</Text>
             </View>
-            <View style={[styles.info, index < categories.length - 1 && styles.infoBorder]}>
+            <View style={styles.info}>
               <Text style={styles.name}>{item.name}</Text>
               <View style={styles.actions}>
                 <Ionicons name="chevron-forward" size={18} color="#C7C7CC" />
@@ -102,8 +97,6 @@ export default function CategoriesScreen() {
         ListEmptyComponent={
           <EmptyState message={t('noCategories')} icon="🗂️" />
         }
-        ListHeaderComponent={categories.length > 0 ? <View style={styles.cardTop} /> : null}
-        ListFooterComponent={categories.length > 0 ? <View style={styles.cardBottom} /> : null}
       />
 
     </View>
@@ -112,6 +105,21 @@ export default function CategoriesScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F7' },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  pageTitle: {
+    fontSize: 34,
+    fontWeight: '700',
+    color: '#000000',
+    letterSpacing: 0.37,
+    marginBottom: 8,
+  },
   segmentContainer: {
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -120,13 +128,13 @@ const styles = StyleSheet.create({
   segment: {
     flexDirection: 'row',
     backgroundColor: '#E5E5EA',
-    borderRadius: 8,
-    padding: 2,
+    borderRadius: 999,
+    padding: 3,
   },
   segmentBtn: {
     flex: 1,
-    paddingVertical: 7,
-    borderRadius: 7,
+    paddingVertical: 8,
+    borderRadius: 999,
     alignItems: 'center',
   },
   segmentBtnActive: {
@@ -134,34 +142,28 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowRadius: 3,
     elevation: 2,
   },
   segmentText: { fontSize: 13, fontWeight: '500', color: '#8E8E93' },
   segmentTextActive: { color: '#000000', fontWeight: '600' },
-  list: { paddingHorizontal: 16, paddingBottom: 20 },
-  cardTop: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    height: 4,
-  },
-  cardBottom: {
-    backgroundColor: '#FFFFFF',
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
-    height: 4,
-  },
+  list: { paddingHorizontal: 16, paddingBottom: 20, gap: 10 },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    paddingLeft: 16,
+    borderRadius: 16,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   iconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -170,11 +172,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingRight: 16,
     marginLeft: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#C6C6C8',
   },
   infoBorder: {},
   name: { flex: 1, fontSize: 17, fontWeight: '400', color: '#000000' },

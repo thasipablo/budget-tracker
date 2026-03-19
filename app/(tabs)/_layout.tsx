@@ -8,10 +8,24 @@ import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useI18n } from '../../src/i18n';
 
 const ICON_MAP: Record<string, keyof typeof Ionicons.glyphMap> = {
+  index: 'house',
+  transactions: 'list-bullet',
+  categories: 'square-grid-2x2',
+  charts: 'chart-pie',
+};
+
+const ICON_FALLBACK: Record<string, keyof typeof Ionicons.glyphMap> = {
   index: 'home',
   transactions: 'list',
   categories: 'grid',
   charts: 'pie-chart',
+};
+
+const TAB_LABELS: Record<string, string> = {
+  index: 'dashboard',
+  transactions: 'transactions',
+  categories: 'categories',
+  charts: 'charts',
 };
 
 function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
@@ -19,17 +33,10 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const leftRoutes = state.routes.slice(0, 2);
-  const rightRoutes = state.routes.slice(2);
-
-  const renderTab = (route: typeof state.routes[number], index: number) => {
-    const { options } = descriptors[route.key];
-    const label =
-      typeof options.tabBarLabel === 'string'
-        ? options.tabBarLabel
-        : (options.title ?? route.name);
+  const renderTab = (route: typeof state.routes[number]) => {
     const isFocused = state.index === state.routes.indexOf(route);
-    const iconName = ICON_MAP[route.name] ?? 'ellipse';
+    const iconName = ICON_FALLBACK[route.name] ?? 'ellipse';
+    const labelKey = TAB_LABELS[route.name] ?? route.name;
 
     const onPress = () => {
       setMenuOpen(false);
@@ -49,13 +56,15 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         accessibilityRole="button"
         accessibilityState={isFocused ? { selected: true } : {}}
         onPress={onPress}
-        style={[styles.tab, isFocused && styles.tabActive]}
+        style={styles.tab}
       >
-        <Ionicons
-          name={isFocused ? iconName : (iconName + '-outline') as keyof typeof Ionicons.glyphMap}
-          size={24}
-          color={isFocused ? '#007AFF' : '#8E8E93'}
-        />
+        <View style={[styles.tabInner, isFocused && styles.tabInnerActive]}>
+          <Ionicons
+            name={isFocused ? iconName : (iconName + '-outline') as keyof typeof Ionicons.glyphMap}
+            size={22}
+            color={isFocused ? '#007AFF' : '#8E8E93'}
+          />
+        </View>
       </TouchableOpacity>
     );
   };
@@ -93,25 +102,26 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             </View>
           </View>
         )}
-        <View style={styles.container}>
-          {leftRoutes.map((r) => renderTab(r, state.routes.indexOf(r)))}
-
-          {/* Center add button */}
-          <View style={styles.centerSlot}>
-            <TouchableOpacity
-              style={[styles.centerBtn, menuOpen && styles.centerBtnOpen]}
-              onPress={() => setMenuOpen((o) => !o)}
-              activeOpacity={0.85}
-            >
-              <Ionicons
-                name={menuOpen ? 'close' : 'add'}
-                size={26}
-                color="#FFFFFF"
-              />
-            </TouchableOpacity>
+        <View style={styles.barRow}>
+          {/* Tab items pill */}
+          <View style={styles.container}>
+            <View style={styles.tabs}>
+              {state.routes.map((r) => renderTab(r))}
+            </View>
           </View>
 
-          {rightRoutes.map((r) => renderTab(r, state.routes.indexOf(r)))}
+          {/* Add button — separate pill */}
+          <TouchableOpacity
+            style={[styles.addBtn, menuOpen && styles.addBtnOpen]}
+            onPress={() => setMenuOpen((o) => !o)}
+            activeOpacity={0.85}
+          >
+            <Ionicons
+              name={menuOpen ? 'close' : 'add'}
+              size={24}
+              color="#FFFFFF"
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </>
@@ -125,52 +135,69 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     backgroundColor: '#F2F2F7',
-    paddingHorizontal: 20,
+    paddingHorizontal: 40,
     paddingTop: 8,
     zIndex: 10,
   },
-  container: {
+  barRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 10,
+  },
+  container: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
     borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
+    padding: 8,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 12,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  tabs: {
+    flexDirection: 'row',
   },
   tab: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    borderRadius: 999,
   },
-  tabActive: {},
-  centerSlot: {
-    paddingHorizontal: 6,
+  tabInner: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
-  centerBtn: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
+  tabInnerActive: {
+    backgroundColor: '#E8E8ED',
+  },
+  tabLabel: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#8E8E93',
+    letterSpacing: 0.1,
+  },
+  tabLabelActive: {
+    color: '#007AFF',
+    fontWeight: '600',
+  },
+  addBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: '#007AFF',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#007AFF',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.4,
     shadowRadius: 6,
     elevation: 5,
   },
-  centerBtnOpen: {
+  addBtnOpen: {
     backgroundColor: '#3A3A3C',
-    shadowColor: '#000000',
+    shadowColor: '#000',
     shadowOpacity: 0.2,
   },
   popup: {
@@ -199,17 +226,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   popupBtn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderRadius: 999,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
   },
   expenseBtn: {
     backgroundColor: '#FFF0F0',
@@ -236,9 +260,10 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen name="index" options={{ title: t('dashboard'), headerShown: false }} />
-      <Tabs.Screen name="transactions" options={{ title: t('transactions') }} />
-      <Tabs.Screen name="categories" options={{ title: t('categories') }} />
+      <Tabs.Screen name="transactions" options={{ title: t('transactions'), headerShown: false }} />
+      <Tabs.Screen name="categories" options={{ title: t('categories'), headerShown: false }} />
       <Tabs.Screen name="charts" options={{ title: t('charts'), headerShown: false }} />
     </Tabs>
   );
 }
+

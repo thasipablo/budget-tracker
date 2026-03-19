@@ -42,9 +42,14 @@ export function SummaryCard({ summary }: Props) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 20,
     padding: 20,
     marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   balanceLabel: {
     fontSize: 13,
@@ -54,11 +59,12 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   balanceAmount: {
-    fontSize: 34,
+    fontSize: 40,
     fontWeight: '700',
     color: '#000000',
     marginTop: 4,
     marginBottom: 20,
+    letterSpacing: -1,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
   half: { flex: 1 },
@@ -76,5 +82,5 @@ const styles = StyleSheet.create({
   },
   dot: { width: 8, height: 8, borderRadius: 4 },
   label: { fontSize: 13, color: '#8E8E93', fontWeight: '500' },
-  amount: { fontSize: 20, fontWeight: '600' },
+  amount: { fontSize: 22, fontWeight: '600', letterSpacing: -0.5 },
 });

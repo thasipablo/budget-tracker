@@ -90,6 +90,7 @@ export default function ChartsScreen() {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { paddingTop: insets.top + 8 }]}>
+      <Text style={styles.pageTitle}>{t('charts')}</Text>
       {/* iOS segmented control */}
       <View style={styles.segmentContainer}>
         <View style={styles.segment}>
@@ -183,17 +184,24 @@ export default function ChartsScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F7' },
   content: { padding: 16, paddingBottom: 20 },
+  pageTitle: {
+    fontSize: 34,
+    fontWeight: '700',
+    color: '#000000',
+    letterSpacing: 0.37,
+    marginBottom: 16,
+  },
   segmentContainer: { marginBottom: 16 },
   segment: {
     flexDirection: 'row',
     backgroundColor: '#E5E5EA',
-    borderRadius: 8,
-    padding: 2,
+    borderRadius: 999,
+    padding: 3,
   },
   segmentBtn: {
     flex: 1,
-    paddingVertical: 7,
-    borderRadius: 7,
+    paddingVertical: 8,
+    borderRadius: 999,
     alignItems: 'center',
   },
   segmentBtnActive: {
@@ -201,21 +209,26 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowRadius: 3,
     elevation: 2,
   },
   segmentText: { fontSize: 13, fontWeight: '500', color: '#8E8E93' },
   segmentTextActive: { color: '#000000', fontWeight: '600' },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 20,
     padding: 20,
     marginBottom: 16,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   cardTitle: {
-    fontSize: 17,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     color: '#000000',
     marginBottom: 16,
     alignSelf: 'flex-start',
