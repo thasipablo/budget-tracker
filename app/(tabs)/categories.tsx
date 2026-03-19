@@ -174,7 +174,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 12,
   },
-  infoBorder: {},
   name: { flex: 1, fontSize: 17, fontWeight: '400', color: '#000000' },
   actions: { flexDirection: 'row', alignItems: 'center', gap: 12 },
 });

@@ -28,14 +28,14 @@ const TAB_LABELS: Record<string, string> = {
   charts: 'charts',
 };
 
-function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const renderTab = (route: typeof state.routes[number]) => {
     const isFocused = state.index === state.routes.indexOf(route);
-    const iconName = ICON_FALLBACK[route.name] ?? 'ellipse';
+    const iconName = ICON_MAP[route.name] ?? ICON_FALLBACK[route.name] ?? 'ellipse';
     const labelKey = TAB_LABELS[route.name] ?? route.name;
 
     const onPress = () => {
@@ -55,6 +55,7 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         key={route.key}
         accessibilityRole="button"
         accessibilityState={isFocused ? { selected: true } : {}}
+        accessibilityLabel={t(labelKey)}
         onPress={onPress}
         style={styles.tab}
       >
