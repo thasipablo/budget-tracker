@@ -89,24 +89,29 @@ export default function ChartsScreen() {
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { paddingTop: insets.top + 8 }]}>
-      <Text style={styles.pageTitle}>{t('charts')}</Text>
-      {/* iOS segmented control */}
-      <View style={styles.segmentContainer}>
-        <View style={styles.segment}>
-          {periods.map((p) => (
-            <TouchableOpacity
-              key={p.value}
-              style={[styles.segmentBtn, period === p.value && styles.segmentBtnActive]}
-              onPress={() => setPeriod(p.value)}
-            >
-              <Text style={[styles.segmentText, period === p.value && styles.segmentTextActive]}>
-                {p.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
+    <View style={styles.screen}>
+      {/* Fixed header: title + segmented control */}
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <Text style={styles.pageTitle}>{t('charts')}</Text>
+        <View style={styles.segmentContainer}>
+          <View style={styles.segment}>
+            {periods.map((p) => (
+              <TouchableOpacity
+                key={p.value}
+                style={[styles.segmentBtn, period === p.value && styles.segmentBtnActive]}
+                onPress={() => setPeriod(p.value)}
+              >
+                <Text style={[styles.segmentText, period === p.value && styles.segmentTextActive]}>
+                  {p.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </View>
+
+      {/* Scrollable charts */}
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
 
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
@@ -177,12 +182,19 @@ export default function ChartsScreen() {
           </View>
         </>
       )}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F7' },
+  header: {
+    backgroundColor: '#F2F2F7',
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  scroll: { flex: 1, backgroundColor: '#F2F2F7' },
   content: { padding: 16, paddingBottom: 20 },
   pageTitle: {
     fontSize: 34,

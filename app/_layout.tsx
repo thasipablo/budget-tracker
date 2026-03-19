@@ -22,7 +22,7 @@ export default function RootLayout() {
 
   return (
     <I18nProvider>
-      <StatusBar style="dark" />
+      <StatusBar style="dark" backgroundColor="#F2F2F7" />
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: '#F2F2F7' },
