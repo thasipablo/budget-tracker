@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { format } from 'date-fns';
-import { AmountInput } from '../../src/components/AmountInput';
 import { getCategories } from '../../src/db/categories';
 import { getTransactionById, insertTransaction, updateTransaction } from '../../src/db/transactions';
 import { useI18n } from '../../src/i18n';
@@ -95,7 +94,25 @@ export default function TransactionModal() {
 
         {/* Amount */}
         <Text style={styles.sectionHeader}>{t('amount')}</Text>
-        <AmountInput value={amount} onChange={setAmount} />
+        <View style={styles.inputCard}>
+          <View style={styles.amountRow}>
+            <Text style={styles.currencySymbol}>$</Text>
+            <TextInput
+              style={styles.amountInput}
+              value={amount}
+              onChangeText={(text) => {
+                const cleaned = text.replace(/[^0-9.]/g, '');
+                const parts = cleaned.split('.');
+                if (parts.length > 2) return;
+                if (parts[1]?.length > 2) return;
+                setAmount(cleaned);
+              }}
+              placeholder="0.00"
+              placeholderTextColor="#C7C7CC"
+              keyboardType="decimal-pad"
+            />
+          </View>
+        </View>
 
         {/* Category */}
         <Text style={styles.sectionHeader}>{t('category')}</Text>
@@ -195,6 +212,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
     overflow: 'hidden',
+  },
+  amountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    height: 44,
+  },
+  currencySymbol: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#8E8E93',
+    marginRight: 4,
+  },
+  amountInput: {
+    flex: 1,
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#000000',
   },
   textInput: {
     paddingHorizontal: 12,
