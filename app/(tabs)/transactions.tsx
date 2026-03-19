@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { TransactionItem } from '../../src/components/TransactionItem';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useTransactions } from '../../src/hooks/useTransactions';
@@ -84,13 +83,6 @@ export default function TransactionsScreen() {
         style={styles.flatList}
       />
 
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => router.push('/transaction/new')}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="add" size={28} color="#FFFFFF" />
-      </TouchableOpacity>
     </View>
   );
 }
@@ -125,7 +117,7 @@ const styles = StyleSheet.create({
   segmentText: { fontSize: 13, fontWeight: '500', color: '#8E8E93' },
   segmentTextActive: { color: '#000000', fontWeight: '600' },
   flatList: { flex: 1 },
-  list: { paddingHorizontal: 16, paddingBottom: 100 },
+  list: { paddingHorizontal: 16, paddingBottom: 20 },
   listCardTop: {
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 12,
@@ -137,21 +129,5 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
     height: 4,
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 6,
   },
 });

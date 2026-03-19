@@ -31,11 +31,13 @@ const PRESET_ICONS = [
 
 export default function CategoryModal() {
   const { t } = useI18n();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, type: typeParam } = useLocalSearchParams<{ id: string; type?: string }>();
   const isNew = id === 'new';
 
   const [name, setName] = useState('');
-  const [type, setType] = useState<TransactionType>('expense');
+  const [type, setType] = useState<TransactionType>(
+    isNew && typeParam === 'income' ? 'income' : 'expense'
+  );
   const [color, setColor] = useState(PRESET_COLORS[6]); // systemBlue
   const [icon, setIcon] = useState(PRESET_ICONS[0]);
   const [saving, setSaving] = useState(false);

@@ -180,7 +180,7 @@ export default function ChartsScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F7' },
-  content: { padding: 16, paddingBottom: 40 },
+  content: { padding: 16, paddingBottom: 20 },
   segmentContainer: { marginBottom: 16 },
   segment: {
     flexDirection: 'row',

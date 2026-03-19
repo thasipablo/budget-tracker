@@ -8,7 +8,8 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useNavigation } from 'expo-router';
+import { useLayoutEffect } from 'react';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useCategories } from '../../src/hooks/useCategories';
 import { useI18n } from '../../src/i18n';
@@ -18,8 +19,23 @@ type Tab = TransactionType;
 
 export default function CategoriesScreen() {
   const { t } = useI18n();
+  const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState<Tab>('expense');
   const { categories, load, remove } = useCategories();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => router.push(`/category/new?type=${activeTab}`)}
+          style={{ marginRight: 16 }}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Ionicons name="add" size={28} color="#007AFF" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, activeTab]);
 
   const tabs: { label: string; value: Tab }[] = [
     { label: t('expenses'), value: 'expense' },
@@ -90,13 +106,6 @@ export default function CategoriesScreen() {
         ListFooterComponent={categories.length > 0 ? <View style={styles.cardBottom} /> : null}
       />
 
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => router.push('/category/new')}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="add" size={28} color="#FFFFFF" />
-      </TouchableOpacity>
     </View>
   );
 }
@@ -130,7 +139,7 @@ const styles = StyleSheet.create({
   },
   segmentText: { fontSize: 13, fontWeight: '500', color: '#8E8E93' },
   segmentTextActive: { color: '#000000', fontWeight: '600' },
-  list: { paddingHorizontal: 16, paddingBottom: 100 },
+  list: { paddingHorizontal: 16, paddingBottom: 20 },
   cardTop: {
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 12,
@@ -170,20 +179,4 @@ const styles = StyleSheet.create({
   infoBorder: {},
   name: { flex: 1, fontSize: 17, fontWeight: '400', color: '#000000' },
   actions: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  fab: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 6,
-  },
 });

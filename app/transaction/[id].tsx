@@ -17,11 +17,13 @@ import type { Category, TransactionType } from '../../src/types';
 
 export default function TransactionModal() {
   const { t } = useI18n();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, type: typeParam } = useLocalSearchParams<{ id: string; type?: string }>();
   const isNew = id === 'new';
 
   const [amount, setAmount] = useState('');
-  const [type, setType] = useState<TransactionType>('expense');
+  const [type, setType] = useState<TransactionType>(
+    isNew && typeParam === 'income' ? 'income' : 'expense'
+  );
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [note, setNote] = useState('');
