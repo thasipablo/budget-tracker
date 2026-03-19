@@ -61,7 +61,7 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         <View style={[styles.tabInner, isFocused && styles.tabInnerActive]}>
           <Ionicons
             name={isFocused ? iconName : (iconName + '-outline') as keyof typeof Ionicons.glyphMap}
-            size={22}
+            size={26}
             color={isFocused ? '#007AFF' : '#8E8E93'}
           />
         </View>
@@ -142,10 +142,10 @@ const styles = StyleSheet.create({
   barRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 20,
+    justifyContent: 'center',
   },
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
     borderRadius: 999,
     padding: 8,
@@ -167,9 +167,9 @@ const styles = StyleSheet.create({
   tabInner: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
   },
   tabInnerActive: {
     backgroundColor: '#E8E8ED',
