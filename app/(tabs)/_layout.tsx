@@ -7,13 +7,6 @@ import { router } from 'expo-router';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useI18n } from '../../src/i18n';
 
-const ICON_MAP: Record<string, keyof typeof Ionicons.glyphMap> = {
-  index: 'house',
-  transactions: 'list-bullet',
-  categories: 'square-grid-2x2',
-  charts: 'chart-pie',
-};
-
 const ICON_FALLBACK: Record<string, keyof typeof Ionicons.glyphMap> = {
   index: 'home',
   transactions: 'list',
@@ -28,7 +21,7 @@ const TAB_LABELS: Record<string, string> = {
   charts: 'charts',
 };
 
-function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,15 +48,19 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         key={route.key}
         accessibilityRole="button"
         accessibilityState={isFocused ? { selected: true } : {}}
+        accessibilityLabel={t(labelKey)}
         onPress={onPress}
         style={styles.tab}
       >
         <View style={[styles.tabInner, isFocused && styles.tabInnerActive]}>
           <Ionicons
             name={isFocused ? iconName : (iconName + '-outline') as keyof typeof Ionicons.glyphMap}
-            size={26}
+            size={22}
             color={isFocused ? '#007AFF' : '#8E8E93'}
           />
+          <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
+            {t(labelKey as any)}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -167,15 +164,16 @@ const styles = StyleSheet.create({
   tabInner: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 46,
-    height: 46,
-    borderRadius: 23,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    gap: 2,
   },
   tabInnerActive: {
     backgroundColor: '#E8E8ED',
   },
   tabLabel: {
-    fontSize: 10,
+    fontSize: 8,
     fontWeight: '500',
     color: '#8E8E93',
     letterSpacing: 0.1,
