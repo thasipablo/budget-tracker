@@ -11,7 +11,6 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
 import { getExpenseById, insertProjectExpense, updateProjectExpense } from '../../src/db/projectExpenses';
-import { activatePhaseIfAwaiting } from '../../src/db/phases';
 import { getCategoriesForProject } from '../../src/db/categories';
 import { useI18n } from '../../src/i18n';
 import { DatePickerField } from '../../src/components/DatePickerField';
@@ -72,7 +71,6 @@ export default function ProjectExpenseModal() {
           selectedCategoryId,
           note.trim() || undefined
         );
-        await activatePhaseIfAwaiting(Number(phaseId));
       } else {
         await updateProjectExpense(
           Number(id),
