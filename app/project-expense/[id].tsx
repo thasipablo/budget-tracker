@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,8 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import { useLocalSearchParams, router, Stack } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
 import { getExpenseById, insertProjectExpense, updateProjectExpense } from '../../src/db/projectExpenses';
 import { getCategoriesForProject } from '../../src/db/categories';
 import { useI18n } from '../../src/i18n';
@@ -30,15 +31,17 @@ export default function ProjectExpenseModal() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [saving, setSaving] = useState(false);
 
+  // Load expense data once on mount
   useEffect(() => {
-    if (projectId) loadCategories(Number(projectId));
     if (!isNew) loadExpense();
   }, []);
 
-  const loadCategories = async (pid: number) => {
-    const cats = await getCategoriesForProject(pid);
-    setCategories(cats);
-  };
+  // Reload categories on focus so newly created categories appear immediately
+  useFocusEffect(
+    useCallback(() => {
+      if (projectId) getCategoriesForProject(Number(projectId)).then(setCategories);
+    }, [projectId])
+  );
 
   const loadExpense = async () => {
     const expense = await getExpenseById(Number(id));
@@ -153,6 +156,15 @@ export default function ProjectExpenseModal() {
               </Text>
             </TouchableOpacity>
           ))}
+          <TouchableOpacity
+            style={[styles.categoryChip, styles.categoryChipAdd]}
+            onPress={() => router.push(`/project-category/new?projectId=${projectId}`)}
+          >
+            <Ionicons name="add" size={16} color="#5856D6" />
+            <Text style={[styles.categoryLabel, { color: '#5856D6', fontWeight: '600' }]}>
+              {t('newCategory')}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Note */}
@@ -217,6 +229,10 @@ const styles = StyleSheet.create({
   },
   categoryIcon: { fontSize: 16 },
   categoryLabel: { fontSize: 13, color: '#3C3C43' },
+  categoryChipAdd: {
+    borderStyle: 'dashed',
+    borderColor: '#5856D6',
+  },
   saveBtn: {
     marginTop: 32,
     backgroundColor: '#007AFF',

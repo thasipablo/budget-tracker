@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,8 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import { useLocalSearchParams, router, Stack } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
 import { format } from 'date-fns';
 import { getCategories } from '../../src/db/categories';
 import { getTransactionById, insertTransaction, updateTransaction } from '../../src/db/transactions';
@@ -30,25 +31,27 @@ export default function TransactionModal() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [saving, setSaving] = useState(false);
 
+  // Load transaction data once on mount
   useEffect(() => {
-    loadData();
+    if (!isNew) {
+      getTransactionById(Number(id)).then((tx) => {
+        if (tx) {
+          setAmount(tx.amount.toString());
+          setType(tx.type);
+          setCategoryId(tx.category_id);
+          setDate(tx.date.slice(0, 10));
+          setNote(tx.note ?? '');
+        }
+      });
+    }
   }, []);
 
-  const loadData = async () => {
-    const cats = await getCategories();
-    setCategories(cats);
-
-    if (!isNew) {
-      const tx = await getTransactionById(Number(id));
-      if (tx) {
-        setAmount(tx.amount.toString());
-        setType(tx.type);
-        setCategoryId(tx.category_id);
-        setDate(tx.date.slice(0, 10));
-        setNote(tx.note ?? '');
-      }
-    }
-  };
+  // Reload categories on focus so newly created categories appear immediately
+  useFocusEffect(
+    useCallback(() => {
+      getCategories().then(setCategories);
+    }, [])
+  );
 
   const filteredCategories = categories.filter((c) => c.type === type);
 
@@ -136,6 +139,13 @@ export default function TransactionModal() {
               </Text>
             </TouchableOpacity>
           ))}
+          <TouchableOpacity
+            style={styles.catChipAdd}
+            onPress={() => router.push(`/category/new?type=${type}`)}
+          >
+            <Ionicons name="add" size={14} color="#007AFF" />
+            <Text style={styles.catNameAdd}>{t('newCategory')}</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Date */}
@@ -255,6 +265,18 @@ const styles = StyleSheet.create({
   },
   catIcon: { fontSize: 14 },
   catName: { fontSize: 14, fontWeight: '500' },
+  catChipAdd: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#007AFF',
+  },
+  catNameAdd: { fontSize: 14, fontWeight: '500', color: '#007AFF' },
   saveBtn: {
     marginTop: 32,
     backgroundColor: '#007AFF',
