@@ -119,12 +119,26 @@ export default function PhaseDetailScreen() {
             </View>
           </View>
           {budget != null && (
-            <View style={styles.progressWrapper}>
-              <ProgressBar progress={progress} color={ACCENT} height={8} />
-              {overBudget && (
-                <Text style={styles.overBudgetText}>{t('overBudget')}</Text>
-              )}
-            </View>
+            <>
+              <View style={styles.progressWrapper}>
+                <ProgressBar progress={progress} color={ACCENT} height={8} />
+              </View>
+              <View style={styles.remainingRow}>
+                {overBudget ? (
+                  <>
+                    <Ionicons name="warning" size={13} color="#FF3B30" />
+                    <Text style={styles.overBudgetLabel}>{t('overBy' as any)}</Text>
+                    <Text style={styles.overBudgetAmount}>{formatCurrency(spent - budget)}</Text>
+                  </>
+                ) : (
+                  <>
+                    <Ionicons name="checkmark-circle" size={13} color="#34C759" />
+                    <Text style={styles.remainingLabel}>{t('remaining' as any)}</Text>
+                    <Text style={styles.remainingAmount}>{formatCurrency(budget - spent)}</Text>
+                  </>
+                )}
+              </View>
+            </>
           )}
         </View>
 
@@ -275,7 +289,17 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 12, color: '#8E8E93', marginBottom: 4 },
   statValue: { fontSize: 18, fontWeight: '700', color: '#000000' },
   progressWrapper: { marginTop: 4 },
-  overBudgetText: { marginTop: 6, fontSize: 12, fontWeight: '600', color: '#FF3B30', textAlign: 'right' },
+  remainingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 4,
+    marginTop: 8,
+  },
+  remainingLabel: { fontSize: 12, color: '#34C759', fontWeight: '500' },
+  remainingAmount: { fontSize: 13, color: '#34C759', fontWeight: '700' },
+  overBudgetLabel: { fontSize: 12, color: '#FF3B30', fontWeight: '500' },
+  overBudgetAmount: { fontSize: 13, color: '#FF3B30', fontWeight: '700' },
 
   sectionHeader: {
     flexDirection: 'row',

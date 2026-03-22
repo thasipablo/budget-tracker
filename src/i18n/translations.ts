@@ -144,6 +144,8 @@ export const translations = {
     totalSpent: 'Total Spent',
     overBudget: 'Over budget',
     noBudget: 'No budget set',
+    remaining: 'Remaining',
+    overBy: 'Over by',
 
     // Project categories
     projectCategories: 'Project Categories',
@@ -295,6 +297,8 @@ export const translations = {
     totalSpent: 'Total dépensé',
     overBudget: 'Dépassement',
     noBudget: 'Pas de budget défini',
+    remaining: 'Restant',
+    overBy: 'Dépassé de',
 
     // Project categories
     projectCategories: 'Catégories du projet',
