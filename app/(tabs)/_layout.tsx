@@ -99,17 +99,6 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 <Text style={[styles.popupLabel, { color: '#34C759' }]}>{t('income')}</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.popupSection}>{t('projects')}</Text>
-            <TouchableOpacity
-              style={[styles.popupBtn, styles.projectBtn]}
-              onPress={() => {
-                setMenuOpen(false);
-                router.push('/project/new');
-              }}
-            >
-              <Ionicons name="briefcase" size={18} color="#5856D6" />
-              <Text style={[styles.popupLabel, { color: '#5856D6' }]}>{t('newProject')}</Text>
-            </TouchableOpacity>
           </View>
         )}
         <View style={styles.barRow}>
@@ -253,9 +242,6 @@ const styles = StyleSheet.create({
   },
   incomeBtn: {
     backgroundColor: '#F0FFF4',
-  },
-  projectBtn: {
-    backgroundColor: '#F0EEFF',
   },
   popupLabel: {
     fontSize: 14,
