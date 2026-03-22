@@ -27,7 +27,8 @@ export async function insertPhase(
   name: string,
   budget?: number,
   start_date?: string,
-  end_date?: string
+  end_date?: string,
+  status: string = 'awaiting'
 ): Promise<number> {
   const db = await getDatabase();
   const maxOrder = await db.getFirstAsync<{ max: number | null }>(
@@ -36,8 +37,8 @@ export async function insertPhase(
   );
   const nextIndex = (maxOrder?.max ?? -1) + 1;
   const result = await db.runAsync(
-    'INSERT INTO phases (project_id, name, budget, order_index, start_date, end_date) VALUES (?, ?, ?, ?, ?, ?)',
-    [projectId, name, budget ?? null, nextIndex, start_date ?? null, end_date ?? null]
+    'INSERT INTO phases (project_id, name, budget, order_index, start_date, end_date, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [projectId, name, budget ?? null, nextIndex, start_date ?? null, end_date ?? null, status]
   );
   return result.lastInsertRowId;
 }
@@ -47,12 +48,13 @@ export async function updatePhase(
   name: string,
   budget?: number,
   start_date?: string,
-  end_date?: string
+  end_date?: string,
+  status: string = 'awaiting'
 ): Promise<void> {
   const db = await getDatabase();
   await db.runAsync(
-    'UPDATE phases SET name = ?, budget = ?, start_date = ?, end_date = ? WHERE id = ?',
-    [name, budget ?? null, start_date ?? null, end_date ?? null, id]
+    'UPDATE phases SET name = ?, budget = ?, start_date = ?, end_date = ?, status = ? WHERE id = ?',
+    [name, budget ?? null, start_date ?? null, end_date ?? null, status, id]
   );
 }
 

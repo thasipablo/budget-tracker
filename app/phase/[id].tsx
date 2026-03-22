@@ -11,6 +11,7 @@ import {
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { getPhaseById, insertPhase, updatePhase, deletePhase } from '../../src/db/phases';
 import { useI18n } from '../../src/i18n';
+import type { PhaseStatus } from '../../src/types';
 
 export default function PhaseModal() {
   const { t } = useI18n();
@@ -21,6 +22,7 @@ export default function PhaseModal() {
   const [budget, setBudget] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [status, setStatus] = useState<PhaseStatus>('awaiting');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function PhaseModal() {
       setBudget(phase.budget != null ? phase.budget.toString() : '');
       setStartDate(phase.start_date ?? '');
       setEndDate(phase.end_date ?? '');
+      setStatus(phase.status ?? 'awaiting');
     }
   };
 
@@ -55,7 +58,8 @@ export default function PhaseModal() {
           name.trim(),
           parsedBudget,
           startDate.trim() || undefined,
-          endDate.trim() || undefined
+          endDate.trim() || undefined,
+          status
         );
       } else {
         await updatePhase(
@@ -63,7 +67,8 @@ export default function PhaseModal() {
           name.trim(),
           parsedBudget,
           startDate.trim() || undefined,
-          endDate.trim() || undefined
+          endDate.trim() || undefined,
+          status
         );
       }
       router.back();
@@ -152,6 +157,22 @@ export default function PhaseModal() {
           />
         </View>
 
+        {/* Status */}
+        <Text style={styles.sectionHeader}>{t('projectStatus')}</Text>
+        <View style={styles.segment}>
+          {(['awaiting', 'active', 'done'] as PhaseStatus[]).map((s) => (
+            <TouchableOpacity
+              key={s}
+              style={[styles.segmentBtn, status === s && styles.segmentBtnActive]}
+              onPress={() => setStatus(s)}
+            >
+              <Text style={[styles.segmentText, status === s && styles.segmentTextActive]}>
+                {t(s as any)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
         <TouchableOpacity
           style={[styles.saveBtn, saving && styles.saveBtnDisabled]}
           onPress={handleSave}
@@ -184,6 +205,21 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
   },
   inputCard: { backgroundColor: '#FFFFFF', borderRadius: 10, overflow: 'hidden' },
+  segment: {
+    flexDirection: 'row',
+    backgroundColor: '#E5E5EA',
+    borderRadius: 10,
+    padding: 2,
+  },
+  segmentBtn: {
+    flex: 1,
+    paddingVertical: 7,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  segmentBtnActive: { backgroundColor: '#FFFFFF' },
+  segmentText: { fontSize: 13, fontWeight: '500', color: '#8E8E93' },
+  segmentTextActive: { color: '#000000', fontWeight: '600' },
   textInput: { paddingHorizontal: 12, height: 44, fontSize: 17, color: '#000000' },
   amountRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, height: 44 },
   currencySymbol: { fontSize: 17, fontWeight: '600', color: '#8E8E93', marginRight: 4 },

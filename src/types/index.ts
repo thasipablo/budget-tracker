@@ -49,6 +49,8 @@ export interface Project {
   phase_count?: number;
 }
 
+export type PhaseStatus = 'active' | 'awaiting' | 'done';
+
 export interface Phase {
   id: number;
   project_id: number;
@@ -57,6 +59,7 @@ export interface Phase {
   order_index: number;
   start_date?: string;
   end_date?: string;
+  status: PhaseStatus;
   // joined aggregates
   total_spent?: number;
   expense_count?: number;

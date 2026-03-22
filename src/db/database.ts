@@ -101,6 +101,14 @@ export async function initDatabase(): Promise<void> {
     );
   `);
 
+  // Migration: add status column to phases for existing installs
+  const phaseCols = await database.getAllAsync<{ name: string }>('PRAGMA table_info(phases)');
+  if (!phaseCols.find((c) => c.name === 'status')) {
+    await database.execAsync(
+      "ALTER TABLE phases ADD COLUMN status TEXT NOT NULL DEFAULT 'awaiting'"
+    );
+  }
+
   // Migration: add project_id column to categories for existing installs
   const catCols = await database.getAllAsync<{ name: string }>('PRAGMA table_info(categories)');
   if (!catCols.find((c) => c.name === 'project_id')) {

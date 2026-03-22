@@ -8,7 +8,13 @@ import { getExpensesByPhase, deleteProjectExpense } from '../../src/db/projectEx
 import { ProgressBar } from '../../src/components/ProgressBar';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useI18n } from '../../src/i18n';
-import type { Phase, ProjectExpense } from '../../src/types';
+import type { Phase, PhaseStatus, ProjectExpense } from '../../src/types';
+
+const STATUS_COLOR: Record<PhaseStatus, string> = {
+  awaiting: '#8E8E93',
+  active: '#007AFF',
+  done: '#34C759',
+};
 
 const ACCENT = '#007AFF';
 
@@ -70,7 +76,18 @@ export default function PhaseDetailScreen() {
               <Ionicons name="chevron-back" size={17} color="#3C3C43" />
               <Text style={styles.headerBackLabel}>Project</Text>
             </TouchableOpacity>
-            <Text style={styles.headerTitle} numberOfLines={1}>{phase?.name ?? '…'}</Text>
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle} numberOfLines={1}>{phase?.name ?? '…'}</Text>
+              {phase && (() => {
+                const s: PhaseStatus = phase.status ?? 'awaiting';
+                const color = STATUS_COLOR[s];
+                return (
+                  <View style={[styles.statusBadge, { backgroundColor: color + '20' }]}>
+                    <Text style={[styles.statusText, { color }]}>{s.charAt(0).toUpperCase() + s.slice(1)}</Text>
+                  </View>
+                );
+              })()}
+            </View>
             <TouchableOpacity
               style={styles.headerEditBtn}
               onPress={() => router.push(`/phase/${phaseId}`)}
@@ -207,14 +224,19 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   headerBackLabel: { fontSize: 15, color: '#3C3C43', fontWeight: '500' },
-  headerTitle: {
+  headerCenter: {
     flex: 1,
-    textAlign: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+    gap: 3,
+  },
+  headerTitle: {
     fontSize: 17,
     fontWeight: '700',
     color: '#000000',
-    marginHorizontal: 8,
   },
+  statusBadge: { borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 },
+  statusText: { fontSize: 11, fontWeight: '600' },
   headerEditBtn: {
     width: 36,
     height: 36,

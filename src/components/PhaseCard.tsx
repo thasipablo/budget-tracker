@@ -2,7 +2,13 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useI18n } from '../i18n';
 import { ProgressBar } from './ProgressBar';
-import type { Phase } from '../types';
+import type { Phase, PhaseStatus } from '../types';
+
+const STATUS_COLOR: Record<PhaseStatus, string> = {
+  awaiting: '#8E8E93',
+  active: '#007AFF',
+  done: '#34C759',
+};
 
 interface Props {
   phase: Phase;
@@ -20,12 +26,19 @@ export function PhaseCard({ phase, isFirst, isLast, onPress, onMoveUp, onMoveDow
   const budget = phase.budget;
   const progress = budget && budget > 0 ? spent / budget : 0;
   const isOverBudget = budget != null && spent > budget;
+  const phaseStatus = phase.status ?? 'awaiting';
+  const statusColor = STATUS_COLOR[phaseStatus];
 
   return (
     <View style={styles.card}>
       <TouchableOpacity style={styles.body} onPress={onPress} activeOpacity={0.7}>
         <View style={styles.top}>
           <Text style={styles.name} numberOfLines={1}>{phase.name}</Text>
+          <View style={[styles.statusBadge, { backgroundColor: statusColor + '20' }]}>
+            <Text style={[styles.statusText, { color: statusColor }]}>
+              {t(phaseStatus as any)}
+            </Text>
+          </View>
           {isOverBudget && (
             <Text style={styles.over}>{t('overBudget' as any)}</Text>
           )}
@@ -107,7 +120,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   name: { flex: 1, fontSize: 15, fontWeight: '600', color: '#000000' },
-  over: { fontSize: 11, fontWeight: '600', color: '#FF3B30' },
+  statusBadge: { borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2, marginLeft: 6 },
+  statusText: { fontSize: 11, fontWeight: '600' },
+  over: { fontSize: 11, fontWeight: '600', color: '#FF3B30', marginLeft: 4 },
   statsRow: { flexDirection: 'row', alignItems: 'center', gap: 4, flexWrap: 'wrap' },
   stat: { fontSize: 12, color: '#8E8E93' },
   statValue: { fontWeight: '600', color: '#3A3A3C' },
