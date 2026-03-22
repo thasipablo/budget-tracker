@@ -12,6 +12,7 @@ import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { insertProjectTransfer } from '../../src/db/projectTransfers';
 import { useI18n } from '../../src/i18n';
+import { DatePickerField } from '../../src/components/DatePickerField';
 
 export default function ProjectTransferModal() {
   const { t } = useI18n();
@@ -77,13 +78,7 @@ export default function ProjectTransferModal() {
         {/* Date */}
         <Text style={styles.sectionHeader}>{t('date')}</Text>
         <View style={styles.inputCard}>
-          <TextInput
-            style={styles.textInput}
-            value={date}
-            onChangeText={setDate}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor="#C7C7CC"
-          />
+          <DatePickerField value={date} onChange={setDate} />
         </View>
 
         {/* Note */}

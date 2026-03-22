@@ -14,6 +14,7 @@ import { getExpenseById, insertProjectExpense, updateProjectExpense } from '../.
 import { activatePhaseIfAwaiting } from '../../src/db/phases';
 import { getCategoriesForProject } from '../../src/db/categories';
 import { useI18n } from '../../src/i18n';
+import { DatePickerField } from '../../src/components/DatePickerField';
 import type { Category } from '../../src/types';
 
 export default function ProjectExpenseModal() {
@@ -120,13 +121,7 @@ export default function ProjectExpenseModal() {
         {/* Date */}
         <Text style={styles.sectionHeader}>{t('date')}</Text>
         <View style={styles.inputCard}>
-          <TextInput
-            style={styles.textInput}
-            value={date}
-            onChangeText={setDate}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor="#C7C7CC"
-          />
+          <DatePickerField value={date} onChange={setDate} />
         </View>
 
         {/* Category */}

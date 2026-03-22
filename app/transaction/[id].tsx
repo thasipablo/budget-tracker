@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { getCategories } from '../../src/db/categories';
 import { getTransactionById, insertTransaction, updateTransaction } from '../../src/db/transactions';
 import { useI18n } from '../../src/i18n';
+import { DatePickerField } from '../../src/components/DatePickerField';
 import type { Category, TransactionType } from '../../src/types';
 
 export default function TransactionModal() {
@@ -151,13 +152,7 @@ export default function TransactionModal() {
         {/* Date */}
         <Text style={styles.sectionHeader}>{t('date')}</Text>
         <View style={styles.inputCard}>
-          <TextInput
-            style={styles.textInput}
-            value={date}
-            onChangeText={setDate}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor="#C7C7CC"
-          />
+          <DatePickerField value={date} onChange={setDate} />
         </View>
 
         {/* Note */}

@@ -11,6 +11,7 @@ import {
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { getPhaseById, insertPhase, updatePhase, deletePhase } from '../../src/db/phases';
 import { useI18n } from '../../src/i18n';
+import { DatePickerField } from '../../src/components/DatePickerField';
 import type { PhaseStatus } from '../../src/types';
 
 export default function PhaseModal() {
@@ -136,25 +137,13 @@ export default function PhaseModal() {
         {/* Start Date */}
         <Text style={styles.sectionHeader}>{t('startDate')}</Text>
         <View style={styles.inputCard}>
-          <TextInput
-            style={styles.textInput}
-            value={startDate}
-            onChangeText={setStartDate}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor="#C7C7CC"
-          />
+          <DatePickerField value={startDate} onChange={setStartDate} placeholder="YYYY-MM-DD" />
         </View>
 
         {/* End Date */}
         <Text style={styles.sectionHeader}>{t('endDate')}</Text>
         <View style={styles.inputCard}>
-          <TextInput
-            style={styles.textInput}
-            value={endDate}
-            onChangeText={setEndDate}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor="#C7C7CC"
-          />
+          <DatePickerField value={endDate} onChange={setEndDate} placeholder="YYYY-MM-DD" />
         </View>
 
         {/* Status */}
