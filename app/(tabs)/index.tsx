@@ -35,6 +35,21 @@ export default function DashboardScreen() {
         <Text style={styles.pageTitle}>{t('dashboard')}</Text>
         <SummaryCard summary={summary} />
 
+        <TouchableOpacity
+          style={styles.chartsCard}
+          onPress={() => router.push('/(tabs)/charts')}
+          activeOpacity={0.75}
+        >
+          <View style={styles.chartsIcon}>
+            <Ionicons name="pie-chart" size={24} color="#007AFF" />
+          </View>
+          <View style={styles.chartsText}>
+            <Text style={styles.chartsTitle}>{t('charts')}</Text>
+            <Text style={styles.chartsSub}>{t('expensesByCategory')}</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color="#C7C7CC" />
+        </TouchableOpacity>
+
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>{t('recentTransactions')}</Text>
           <TouchableOpacity
@@ -98,4 +113,29 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
   },
+  chartsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  chartsIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#007AFF1A',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chartsText: { flex: 1 },
+  chartsTitle: { fontSize: 17, fontWeight: '600', color: '#000000' },
+  chartsSub: { fontSize: 13, color: '#8E8E93', marginTop: 2 },
 });

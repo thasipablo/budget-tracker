@@ -10,15 +10,13 @@ import { useI18n } from '../../src/i18n';
 const ICON_FALLBACK: Record<string, keyof typeof Ionicons.glyphMap> = {
   index: 'home',
   transactions: 'list',
-  categories: 'grid',
-  charts: 'pie-chart',
+  projects: 'briefcase',
 };
 
 const TAB_LABELS: Record<string, string> = {
   index: 'dashboard',
   transactions: 'transactions',
-  categories: 'categories',
-  charts: 'charts',
+  projects: 'projects',
 };
 
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
@@ -26,8 +24,12 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const currentRouteName = state.routes[state.index]?.name;
+  // Charts belongs to the Dashboard section — keep index tab highlighted
+  const activeRouteName = currentRouteName === 'charts' ? 'index' : currentRouteName;
+
   const renderTab = (route: typeof state.routes[number]) => {
-    const isFocused = state.index === state.routes.indexOf(route);
+    const isFocused = route.name === activeRouteName;
     const iconName = ICON_FALLBACK[route.name] ?? 'ellipse';
     const labelKey = TAB_LABELS[route.name] ?? route.name;
 
@@ -48,7 +50,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
         key={route.key}
         accessibilityRole="button"
         accessibilityState={isFocused ? { selected: true } : {}}
-        accessibilityLabel={t(labelKey)}
+        accessibilityLabel={t(labelKey as any)}
         onPress={onPress}
         style={styles.tab}
       >
@@ -103,7 +105,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
           {/* Tab items pill */}
           <View style={styles.container}>
             <View style={styles.tabs}>
-              {state.routes.map((r) => renderTab(r))}
+              {state.routes.filter((r) => r.name in ICON_FALLBACK).map((r) => renderTab(r))}
             </View>
           </View>
 
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
     borderRadius: 999,
-    padding: 8,
+    padding: 5,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
@@ -164,8 +166,8 @@ const styles = StyleSheet.create({
   tabInner: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 999,
     gap: 2,
   },
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8E8ED',
   },
   tabLabel: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '500',
     color: '#8E8E93',
     letterSpacing: 0.1,
@@ -262,6 +264,7 @@ export default function TabLayout() {
       <Tabs.Screen name="index" options={{ title: t('dashboard'), headerShown: false }} />
       <Tabs.Screen name="transactions" options={{ title: t('transactions'), headerShown: false }} />
       <Tabs.Screen name="categories" options={{ title: t('categories'), headerShown: false }} />
+      <Tabs.Screen name="projects" options={{ title: t('projects'), headerShown: false }} />
       <Tabs.Screen name="charts" options={{ title: t('charts'), headerShown: false }} />
     </Tabs>
   );
