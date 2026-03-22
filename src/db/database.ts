@@ -33,6 +33,19 @@ export async function initDatabase(): Promise<void> {
     PRAGMA journal_mode = WAL;
     PRAGMA foreign_keys = ON;
 
+    CREATE TABLE IF NOT EXISTS projects (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      name        TEXT NOT NULL,
+      description TEXT,
+      budget      REAL,
+      color       TEXT NOT NULL DEFAULT '#007AFF',
+      icon        TEXT NOT NULL DEFAULT '🏗️',
+      status      TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'completed', 'archived')),
+      start_date  TEXT,
+      end_date    TEXT,
+      created_at  TEXT NOT NULL DEFAULT (date('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS categories (
       id         INTEGER PRIMARY KEY AUTOINCREMENT,
       name       TEXT NOT NULL,
@@ -46,23 +59,10 @@ export async function initDatabase(): Promise<void> {
       id          INTEGER PRIMARY KEY AUTOINCREMENT,
       amount      REAL NOT NULL,
       type        TEXT NOT NULL CHECK(type IN ('income', 'expense')),
-      category_id INTEGER NOT NULL,
+      category_id INTEGER,
       date        TEXT NOT NULL,
       note        TEXT,
       FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS projects (
-      id          INTEGER PRIMARY KEY AUTOINCREMENT,
-      name        TEXT NOT NULL,
-      description TEXT,
-      budget      REAL,
-      color       TEXT NOT NULL DEFAULT '#007AFF',
-      icon        TEXT NOT NULL DEFAULT '🏗️',
-      status      TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'completed', 'archived')),
-      start_date  TEXT,
-      end_date    TEXT,
-      created_at  TEXT NOT NULL DEFAULT (date('now'))
     );
 
     CREATE TABLE IF NOT EXISTS phases (
@@ -115,6 +115,30 @@ export async function initDatabase(): Promise<void> {
     await database.execAsync(
       'ALTER TABLE categories ADD COLUMN project_id INTEGER REFERENCES projects(id) ON DELETE CASCADE'
     );
+  }
+
+  // Migration: make transactions.category_id nullable for existing installs
+  const txnCols = await database.getAllAsync<{ name: string; notnull: number }>(
+    'PRAGMA table_info(transactions)'
+  );
+  const catIdCol = txnCols.find((c) => c.name === 'category_id');
+  if (catIdCol && catIdCol.notnull === 1) {
+    await database.execAsync(`
+      PRAGMA foreign_keys = OFF;
+      CREATE TABLE transactions_new (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        amount      REAL NOT NULL,
+        type        TEXT NOT NULL CHECK(type IN ('income', 'expense')),
+        category_id INTEGER,
+        date        TEXT NOT NULL,
+        note        TEXT,
+        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+      );
+      INSERT INTO transactions_new SELECT * FROM transactions;
+      DROP TABLE transactions;
+      ALTER TABLE transactions_new RENAME TO transactions;
+      PRAGMA foreign_keys = ON;
+    `);
   }
 
   // Seed default global categories for fresh installs

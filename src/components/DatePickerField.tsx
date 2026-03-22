@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
+import { useI18n } from '../i18n';
 
 interface Props {
   value: string; // 'YYYY-MM-DD' or ''
@@ -31,7 +32,9 @@ function fmt(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-export function DatePickerField({ value, onChange, placeholder = 'Select date' }: Props) {
+export function DatePickerField({ value, onChange, placeholder }: Props) {
+  const { t } = useI18n();
+  const resolvedPlaceholder = placeholder ?? t('selectDate');
   const [show, setShow] = useState(false);
   const [tempDate, setTempDate] = useState<Date>(toDate(value));
 
@@ -66,7 +69,7 @@ export function DatePickerField({ value, onChange, placeholder = 'Select date' }
       <TouchableOpacity style={styles.row} onPress={openPicker} activeOpacity={0.7}>
         <Ionicons name="calendar-outline" size={18} color="#8E8E93" style={styles.icon} />
         <Text style={[styles.label, !value && styles.placeholder]}>
-          {value || placeholder}
+          {value || resolvedPlaceholder}
         </Text>
         {value ? (
           <TouchableOpacity
@@ -102,11 +105,11 @@ export function DatePickerField({ value, onChange, placeholder = 'Select date' }
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <TouchableOpacity onPress={handleClear}>
-                <Text style={styles.clearBtn}>Clear</Text>
+                <Text style={styles.clearBtn}>{t('clear')}</Text>
               </TouchableOpacity>
-              <Text style={styles.sheetTitle}>Select Date</Text>
+              <Text style={styles.sheetTitle}>{t('selectDate')}</Text>
               <TouchableOpacity onPress={handleDone}>
-                <Text style={styles.doneBtn}>Done</Text>
+                <Text style={styles.doneBtn}>{t('doneAction')}</Text>
               </TouchableOpacity>
             </View>
             <DateTimePicker

@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getProjectById } from '../../src/db/projects';
 import { getPhasesByProject, swapPhaseOrder, deletePhase } from '../../src/db/phases';
 import { getTransfersByProject, deleteProjectTransfer } from '../../src/db/projectTransfers';
-import { getCategoriesByProjectId, deleteCategory } from '../../src/db/categories';
+import { getCategoriesByProjectId } from '../../src/db/categories';
 import { ProgressBar } from '../../src/components/ProgressBar';
 import { PhaseCard } from '../../src/components/PhaseCard';
 import { useI18n } from '../../src/i18n';
@@ -100,7 +100,7 @@ export default function ProjectDetailScreen() {
   };
   const statusColor = STATUS_COLORS[project.status] ?? '#8E8E93';
 
-  const fmt = (v: number) => v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  const fmt = (v: number) => v.toLocaleString(undefined, { style: 'currency', currency: 'USD' });
 
   return (
     <>
@@ -239,7 +239,6 @@ export default function ProjectDetailScreen() {
               onPress={() => router.push(`/phase-detail/${phase.id}`)}
               onMoveUp={() => handleMoveUp(index)}
               onMoveDown={() => handleMoveDown(index)}
-              onDelete={() => handleDeletePhase(phase)}
             />
           ))
         )}
