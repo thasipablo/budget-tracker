@@ -10,14 +10,12 @@ import { useI18n } from '../../src/i18n';
 const ICON_FALLBACK: Record<string, keyof typeof Ionicons.glyphMap> = {
   index: 'home',
   transactions: 'list',
-  categories: 'grid',
   projects: 'briefcase',
 };
 
 const TAB_LABELS: Record<string, string> = {
   index: 'dashboard',
   transactions: 'transactions',
-  categories: 'categories',
   projects: 'projects',
 };
 

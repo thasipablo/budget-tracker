@@ -13,8 +13,7 @@ import { useProjects } from '../../src/hooks/useProjects';
 import { ProjectCard } from '../../src/components/ProjectCard';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useI18n } from '../../src/i18n';
-import { getCategories } from '../../src/db/categories';
-import type { ProjectStatus, Category } from '../../src/types';
+import type { ProjectStatus } from '../../src/types';
 
 type Tab = ProjectStatus;
 
@@ -23,7 +22,6 @@ export default function ProjectsScreen() {
   const insets = useSafeAreaInsets();
   const [activeStatus, setActiveStatus] = useState<Tab>('active');
   const { projects, load } = useProjects();
-  const [globalCategories, setGlobalCategories] = useState<Category[]>([]);
 
   const tabs: { label: string; value: Tab }[] = [
     { label: t('active'), value: 'active' },
@@ -34,9 +32,6 @@ export default function ProjectsScreen() {
   useFocusEffect(
     useCallback(() => {
       load(activeStatus);
-      getCategories().then((cats) =>
-        setGlobalCategories(cats.filter((c) => c.type === 'expense'))
-      );
     }, [load, activeStatus])
   );
 
@@ -92,44 +87,6 @@ export default function ProjectsScreen() {
               onPress={() => router.push(`/project-detail/${item.id}`)}
             />
           ))
-        )}
-
-        {/* Transaction expense categories */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>{t('expenseCategories')}</Text>
-          <TouchableOpacity
-            style={styles.seeAllBtn}
-            onPress={() => router.push('/(tabs)/categories')}
-          >
-            <Text style={styles.seeAll}>{t('seeAll')}</Text>
-            <Ionicons name="chevron-forward" size={14} color="#007AFF" />
-          </TouchableOpacity>
-        </View>
-
-        {globalCategories.length === 0 ? (
-          <View style={styles.emptyCats}>
-            <Text style={styles.emptyCatsText}>{t('noCategories')}</Text>
-          </View>
-        ) : (
-          <View style={styles.catGrid}>
-            {globalCategories.map((cat) => (
-              <TouchableOpacity
-                key={cat.id}
-                style={[styles.catChip, { backgroundColor: cat.color + '18', borderColor: cat.color + '40' }]}
-                onPress={() => router.push(`/category/${cat.id}`)}
-              >
-                <Text style={styles.catIcon}>{cat.icon}</Text>
-                <Text style={[styles.catName, { color: cat.color }]}>{cat.name}</Text>
-              </TouchableOpacity>
-            ))}
-            <TouchableOpacity
-              style={[styles.catChip, styles.catChipAdd]}
-              onPress={() => router.push('/category/new?type=expense')}
-            >
-              <Ionicons name="add" size={14} color="#007AFF" />
-              <Text style={styles.catNameAdd}>{t('newCategory')}</Text>
-            </TouchableOpacity>
-          </View>
         )}
 
       </ScrollView>
@@ -188,36 +145,4 @@ const styles = StyleSheet.create({
   },
   segmentText: { fontSize: 13, fontWeight: '500', color: '#8E8E93' },
   segmentTextActive: { color: '#000000', fontWeight: '600' },
-
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 24,
-    marginBottom: 12,
-  },
-  sectionTitle: { fontSize: 20, fontWeight: '700', color: '#000000' },
-  seeAllBtn: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-  seeAll: { fontSize: 15, color: '#007AFF', fontWeight: '400' },
-
-  catGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  catChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    borderWidth: 1,
-  },
-  catChipAdd: {
-    borderStyle: 'dashed',
-    borderColor: '#007AFF',
-    backgroundColor: 'transparent',
-  },
-  catIcon: { fontSize: 14 },
-  catName: { fontSize: 13, fontWeight: '600' },
-  catNameAdd: { fontSize: 13, fontWeight: '600', color: '#007AFF' },
-  emptyCats: { paddingVertical: 12 },
-  emptyCatsText: { fontSize: 14, color: '#8E8E93' },
 });
