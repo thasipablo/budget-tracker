@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, StatusBar } from 'react-native';
 import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getPhaseById } from '../../src/db/phases';
 import { getExpensesByPhase, deleteProjectExpense } from '../../src/db/projectExpenses';
 import { ProgressBar } from '../../src/components/ProgressBar';
@@ -13,6 +14,7 @@ const ACCENT = '#007AFF';
 
 export default function PhaseDetailScreen() {
   const { t } = useI18n();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const phaseId = Number(id);
 
@@ -54,20 +56,32 @@ export default function PhaseDetailScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: phase?.name ?? '…',
-          headerRight: () => (
+      <Stack.Screen options={{ headerShown: false }} />
+      <StatusBar barStyle="dark-content" />
+      <View style={styles.screen}>
+        {/* ── Header ── */}
+        <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
+          <View style={styles.headerNav}>
             <TouchableOpacity
+              style={styles.headerBackBtn}
+              onPress={() => router.back()}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons name="chevron-back" size={17} color="#3C3C43" />
+              <Text style={styles.headerBackLabel}>Project</Text>
+            </TouchableOpacity>
+            <Text style={styles.headerTitle} numberOfLines={1}>{phase?.name ?? '…'}</Text>
+            <TouchableOpacity
+              style={styles.headerEditBtn}
               onPress={() => router.push(`/phase/${phaseId}`)}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <Ionicons name="pencil" size={20} color={ACCENT} />
+              <Ionicons name="pencil" size={16} color="#3C3C43" />
             </TouchableOpacity>
-          ),
-        }}
-      />
-      <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+          </View>
+        </View>
+
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
 
         {/* Stats card */}
         <View style={styles.statsCard}>
@@ -159,12 +173,62 @@ export default function PhaseDetailScreen() {
           </View>
         )}
       </ScrollView>
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F7' },
+  header: {
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#E5E5EA',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+  },
+  headerNav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerBackBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    height: 36,
+    paddingHorizontal: 12,
+    gap: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  headerBackLabel: { fontSize: 15, color: '#3C3C43', fontWeight: '500' },
+  headerTitle: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#000000',
+    marginHorizontal: 8,
+  },
+  headerEditBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  scroll: { flex: 1 },
   content: { padding: 16, paddingBottom: 40 },
 
   statsCard: {

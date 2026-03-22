@@ -100,39 +100,43 @@ export default function ProjectDetailScreen() {
 
   return (
     <>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <Stack.Screen options={{ headerShown: false }} />
 
-      {/* ── Hero ── */}
-      <View style={[styles.hero, { backgroundColor: project.color }]}>
-        <View style={[styles.heroTop, { paddingTop: insets.top + 8 }]}>
+      {/* ── Header ── */}
+      <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
+        {/* Nav row */}
+        <View style={styles.headerNav}>
           <TouchableOpacity
-            style={styles.heroBackBtn}
+            style={styles.headerBackBtn}
             onPress={() => router.back()}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Ionicons name="chevron-back" size={20} color="#FFFFFF" />
-            <Text style={styles.heroBackLabel}>{t('projects')}</Text>
+            <Ionicons name="chevron-back" size={17} color="#3C3C43" />
+            <Text style={styles.headerBackLabel}>{t('projects')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.heroEditBtn}
+            style={styles.headerEditBtn}
             onPress={() => router.push(`/project/${project.id}`)}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Ionicons name="pencil" size={16} color="#FFFFFF" />
+            <Ionicons name="pencil" size={16} color="#3C3C43" />
           </TouchableOpacity>
         </View>
 
-        <View style={styles.heroBody}>
-          <Text style={styles.heroIcon}>{project.icon}</Text>
-          <View style={styles.heroMeta}>
-            <Text style={styles.heroName}>{project.name}</Text>
+        {/* Identity row */}
+        <View style={styles.headerIdentity}>
+          <View style={[styles.headerIconWrap, { backgroundColor: project.color + '18' }]}>
+            <Text style={styles.headerIconEmoji}>{project.icon}</Text>
+          </View>
+          <View style={styles.headerMeta}>
+            <Text style={styles.headerName}>{project.name}</Text>
             {project.description ? (
-              <Text style={styles.heroDesc} numberOfLines={2}>{project.description}</Text>
+              <Text style={styles.headerDesc} numberOfLines={2}>{project.description}</Text>
             ) : null}
-            <View style={[styles.statusBadge, { backgroundColor: '#FFFFFF28' }]}>
+            <View style={[styles.statusBadge, { backgroundColor: statusColor + '18' }]}>
               <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
-              <Text style={styles.statusText}>{t(project.status as any)}</Text>
+              <Text style={[styles.statusText, { color: statusColor }]}>{t(project.status as any)}</Text>
             </View>
           </View>
         </View>
@@ -148,7 +152,7 @@ export default function ProjectDetailScreen() {
           <View style={styles.heroStatDivider} />
           <View style={styles.heroStat}>
             <Text style={styles.heroStatLabel}>{t('totalFunded')}</Text>
-            <Text style={[styles.heroStatValue, styles.fundedValue]}>{fmt(funded)}</Text>
+            <Text style={[styles.heroStatValue, { color: '#34C759' }]}>{fmt(funded)}</Text>
           </View>
           <View style={styles.heroStatDivider} />
           <View style={styles.heroStat}>
@@ -160,12 +164,12 @@ export default function ProjectDetailScreen() {
         </View>
       </View>
 
-      {/* ── Progress bar pulled out of hero ── */}
+      {/* ── Progress bar ── */}
       {budget != null && (
         <View style={styles.progressStrip}>
           <ProgressBar progress={progress} color={project.color} height={6} />
           {isOverBudget && (
-            <Text style={[styles.overBudgetLabel, { color: project.color }]}>
+            <Text style={[styles.overBudgetLabel, { color: '#FF3B30' }]}>
               {t('overBudget')}
             </Text>
           )}
@@ -277,29 +281,65 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F2F2F7' },
   content: { padding: 16, paddingBottom: 80 },
 
-  /* Hero */
-  hero: { paddingHorizontal: 16, paddingBottom: 16 },
-  heroTop: {
+  /* Header */
+  header: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#E5E5EA',
+  },
+  headerNav: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 16,
   },
-  heroBackBtn: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  heroBackLabel: { fontSize: 16, color: '#FFFFFFCC', fontWeight: '500' },
-  heroEditBtn: {
-    width: 32,
-    height: 32,
+  headerBackBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    height: 36,
+    paddingHorizontal: 12,
+    gap: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  headerBackLabel: { fontSize: 15, color: '#3C3C43', fontWeight: '500' },
+  headerEditBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  headerIdentity: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 14,
+    marginBottom: 16,
+  },
+  headerIconWrap: {
+    width: 56,
+    height: 56,
     borderRadius: 16,
-    backgroundColor: '#FFFFFF28',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  heroBody: { flexDirection: 'row', alignItems: 'flex-start', gap: 14, marginBottom: 20 },
-  heroIcon: { fontSize: 44 },
-  heroMeta: { flex: 1, paddingTop: 2 },
-  heroName: { fontSize: 22, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.3 },
-  heroDesc: { fontSize: 14, color: '#FFFFFFB0', marginTop: 4, lineHeight: 19 },
+  headerIconEmoji: { fontSize: 30 },
+  headerMeta: { flex: 1, paddingTop: 2 },
+  headerName: { fontSize: 22, fontWeight: '800', color: '#000000', letterSpacing: -0.3 },
+  headerDesc: { fontSize: 14, color: '#6D6D72', marginTop: 3, lineHeight: 19 },
   statusBadge: {
     alignSelf: 'flex-start',
     flexDirection: 'row',
@@ -311,22 +351,21 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   statusDot: { width: 6, height: 6, borderRadius: 3 },
-  statusText: { fontSize: 12, fontWeight: '600', color: '#FFFFFF' },
+  statusText: { fontSize: 12, fontWeight: '600' },
   heroStats: {
     flexDirection: 'row',
-    backgroundColor: '#00000020',
+    backgroundColor: '#F2F2F7',
     borderRadius: 14,
     padding: 14,
   },
   heroStat: { flex: 1, alignItems: 'center', gap: 3 },
-  heroStatLabel: { fontSize: 10, fontWeight: '600', color: '#FFFFFFA0', textTransform: 'uppercase', letterSpacing: 0.4 },
-  heroStatValue: { fontSize: 15, fontWeight: '700', color: '#FFFFFF' },
-  heroStatDivider: { width: 1, backgroundColor: '#FFFFFF30' },
-  fundedValue: { color: '#A8FFB8' },
-  overValue: { color: '#FFD0CC' },
+  heroStatLabel: { fontSize: 10, fontWeight: '600', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: 0.4 },
+  heroStatValue: { fontSize: 15, fontWeight: '700', color: '#000000' },
+  heroStatDivider: { width: 1, backgroundColor: '#E5E5EA' },
+  overValue: { color: '#FF3B30' },
 
   /* Progress strip */
-  progressStrip: { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: '#F2F2F7', gap: 4 },
+  progressStrip: { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: '#FFFFFF', gap: 4 },
   overBudgetLabel: { fontSize: 12, fontWeight: '600', textAlign: 'right' },
 
   /* Section headers */

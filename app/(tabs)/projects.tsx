@@ -50,8 +50,7 @@ export default function ProjectsScreen() {
             onPress={() => router.push('/project/new')}
             activeOpacity={0.75}
           >
-            <Ionicons name="add" size={18} color="#007AFF" />
-            <Text style={styles.newProjectText}>{t('newProject')}</Text>
+            <Ionicons name="add" size={22} color="#3C3C43" />
           </TouchableOpacity>
         </View>
 
@@ -112,15 +111,18 @@ const styles = StyleSheet.create({
     letterSpacing: 0.37,
   },
   newProjectBtn: {
-    flexDirection: 'row',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#007AFF1A',
-    borderRadius: 999,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
   },
-  newProjectText: { fontSize: 14, fontWeight: '600', color: '#007AFF' },
 
   segment: {
     flexDirection: 'row',
