@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
     borderRadius: 999,
-    padding: 8,
+    padding: 5,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
   tabInner: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 999,
     gap: 2,
   },
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8E8ED',
   },
   tabLabel: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '500',
     color: '#8E8E93',
     letterSpacing: 0.1,
