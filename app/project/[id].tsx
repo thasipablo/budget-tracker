@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { getProjectById, insertProject, updateProject, deleteProject } from '../../src/db/projects';
 import { useI18n } from '../../src/i18n';
 import type { ProjectStatus } from '../../src/types';
@@ -221,6 +222,7 @@ export default function ProjectModal() {
 
         {!isNew && (
           <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={16} color="#FF3B30" />
             <Text style={styles.deleteBtnText}>{t('deleteProject')}</Text>
           </TouchableOpacity>
         )}
@@ -358,7 +360,10 @@ const styles = StyleSheet.create({
     marginTop: 12,
     borderRadius: 12,
     paddingVertical: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
   },
-  deleteBtnText: { color: '#FF3B30', fontSize: 17, fontWeight: '400' },
+  deleteBtnText: { color: '#FF3B30', fontSize: 17, fontWeight: '600' },
 });

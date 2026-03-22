@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { getPhaseById, insertPhase, updatePhase, deletePhase } from '../../src/db/phases';
 import { useI18n } from '../../src/i18n';
 import { DatePickerField } from '../../src/components/DatePickerField';
@@ -172,6 +173,7 @@ export default function PhaseModal() {
 
         {!isNew && (
           <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={16} color="#FF3B30" />
             <Text style={styles.deleteBtnText}>{t('deletePhase')}</Text>
           </TouchableOpacity>
         )}
@@ -222,6 +224,6 @@ const styles = StyleSheet.create({
   },
   saveBtnDisabled: { opacity: 0.5 },
   saveBtnText: { color: '#FFFFFF', fontSize: 17, fontWeight: '600' },
-  deleteBtn: { marginTop: 12, borderRadius: 12, paddingVertical: 16, alignItems: 'center' },
-  deleteBtnText: { color: '#FF3B30', fontSize: 17, fontWeight: '400' },
+  deleteBtn: { marginTop: 12, borderRadius: 12, paddingVertical: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6 },
+  deleteBtnText: { color: '#FF3B30', fontSize: 17, fontWeight: '600' },
 });

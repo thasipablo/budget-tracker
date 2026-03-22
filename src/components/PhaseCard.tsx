@@ -83,13 +83,6 @@ export function PhaseCard({ phase, isFirst, isLast, onPress, onMoveUp, onMoveDow
         >
           <Ionicons name="chevron-down" size={16} color={isLast ? '#C7C7CC' : '#007AFF'} />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={onDelete}
-          style={styles.deleteBtn}
-          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-        >
-          <Ionicons name="trash-outline" size={16} color="#FF3B30" />
-        </TouchableOpacity>
       </View>
     </View>
   );

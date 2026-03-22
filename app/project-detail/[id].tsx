@@ -166,13 +166,15 @@ export default function ProjectDetailScreen() {
         </View>
 
         {/* Fund Project action */}
-        <TouchableOpacity
-          style={styles.fundBtn}
-          onPress={() => router.push(`/project-transfer/new?projectId=${projectId}`)}
-        >
-          <Ionicons name="arrow-down-circle" size={17} color="#34C759" />
-          <Text style={styles.fundBtnText}>{t('newTransfer')}</Text>
-        </TouchableOpacity>
+        <View style={styles.fundRow}>
+          <TouchableOpacity
+            style={styles.fundBtn}
+            onPress={() => router.push(`/project-transfer/new?projectId=${projectId}`)}
+          >
+            <Ionicons name="arrow-down-circle" size={15} color="#34C759" />
+            <Text style={styles.fundBtnText}>{t('newTransfer')}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* ── Progress bar ── */}
@@ -423,19 +425,19 @@ const styles = StyleSheet.create({
   overBudgetLabel: { fontSize: 12, fontWeight: '600' },
 
   /* Fund button in header */
+  fundRow: { marginTop: 12, alignItems: 'flex-end' },
   fundBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    marginTop: 12,
-    paddingVertical: 10,
-    borderRadius: 12,
+    gap: 5,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+    borderRadius: 999,
     backgroundColor: '#34C75914',
     borderWidth: 1,
     borderColor: '#34C75930',
   },
-  fundBtnText: { fontSize: 14, fontWeight: '600', color: '#34C759' },
+  fundBtnText: { fontSize: 13, fontWeight: '600', color: '#34C759' },
 
   /* Section headers */
   sectionRow: {

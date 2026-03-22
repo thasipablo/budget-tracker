@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
-import { getExpenseById, insertProjectExpense, updateProjectExpense } from '../../src/db/projectExpenses';
+import { getExpenseById, insertProjectExpense, updateProjectExpense, deleteProjectExpense } from '../../src/db/projectExpenses';
 import { getCategoriesForProject } from '../../src/db/categories';
 import { useI18n } from '../../src/i18n';
 import { DatePickerField } from '../../src/components/DatePickerField';
@@ -84,6 +84,20 @@ export default function ProjectExpenseModal() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleDelete = () => {
+    Alert.alert(t('deleteExpense'), t('deleteExpenseMsg'), [
+      { text: t('cancel'), style: 'cancel' },
+      {
+        text: t('delete'),
+        style: 'destructive',
+        onPress: async () => {
+          await deleteProjectExpense(Number(id));
+          router.back();
+        },
+      },
+    ]);
   };
 
   return (
@@ -182,6 +196,13 @@ export default function ProjectExpenseModal() {
         >
           <Text style={styles.saveBtnText}>{saving ? t('saving') : t('saveExpense')}</Text>
         </TouchableOpacity>
+
+        {!isNew && (
+          <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={17} color="#FF3B30" />
+            <Text style={styles.deleteBtnText}>{t('deleteExpense')}</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </>
   );
@@ -237,4 +258,13 @@ const styles = StyleSheet.create({
   },
   saveBtnDisabled: { opacity: 0.5 },
   saveBtnText: { color: '#FFFFFF', fontSize: 17, fontWeight: '600' },
+  deleteBtn: {
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 14,
+  },
+  deleteBtnText: { color: '#FF3B30', fontSize: 16, fontWeight: '400' },
 });

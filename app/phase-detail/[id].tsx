@@ -198,13 +198,6 @@ export default function PhaseDetailScreen() {
                   <Text style={styles.expenseAmount}>{formatCurrency(expense.amount)}</Text>
                   <Text style={styles.expenseDate}>{expense.date}</Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.deleteRowBtn}
-                  onPress={() => handleDeleteExpense(expense)}
-                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                >
-                  <Ionicons name="trash-outline" size={16} color="#FF3B30" />
-                </TouchableOpacity>
               </TouchableOpacity>
             ))}
           </View>
