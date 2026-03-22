@@ -11,14 +11,14 @@ const ICON_FALLBACK: Record<string, keyof typeof Ionicons.glyphMap> = {
   index: 'home',
   transactions: 'list',
   categories: 'grid',
-  charts: 'pie-chart',
+  projects: 'briefcase',
 };
 
 const TAB_LABELS: Record<string, string> = {
   index: 'dashboard',
   transactions: 'transactions',
   categories: 'categories',
-  charts: 'charts',
+  projects: 'projects',
 };
 
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
@@ -26,8 +26,12 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const currentRouteName = state.routes[state.index]?.name;
+  // Charts belongs to the Dashboard section — keep index tab highlighted
+  const activeRouteName = currentRouteName === 'charts' ? 'index' : currentRouteName;
+
   const renderTab = (route: typeof state.routes[number]) => {
-    const isFocused = state.index === state.routes.indexOf(route);
+    const isFocused = route.name === activeRouteName;
     const iconName = ICON_FALLBACK[route.name] ?? 'ellipse';
     const labelKey = TAB_LABELS[route.name] ?? route.name;
 
@@ -48,7 +52,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
         key={route.key}
         accessibilityRole="button"
         accessibilityState={isFocused ? { selected: true } : {}}
-        accessibilityLabel={t(labelKey)}
+        accessibilityLabel={t(labelKey as any)}
         onPress={onPress}
         style={styles.tab}
       >
@@ -97,13 +101,24 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 <Text style={[styles.popupLabel, { color: '#34C759' }]}>{t('income')}</Text>
               </TouchableOpacity>
             </View>
+            <Text style={styles.popupSection}>{t('projects')}</Text>
+            <TouchableOpacity
+              style={[styles.popupBtn, styles.projectBtn]}
+              onPress={() => {
+                setMenuOpen(false);
+                router.push('/project/new');
+              }}
+            >
+              <Ionicons name="briefcase" size={18} color="#5856D6" />
+              <Text style={[styles.popupLabel, { color: '#5856D6' }]}>{t('newProject')}</Text>
+            </TouchableOpacity>
           </View>
         )}
         <View style={styles.barRow}>
           {/* Tab items pill */}
           <View style={styles.container}>
             <View style={styles.tabs}>
-              {state.routes.map((r) => renderTab(r))}
+              {state.routes.filter((r) => r.name in ICON_FALLBACK).map((r) => renderTab(r))}
             </View>
           </View>
 
@@ -241,6 +256,9 @@ const styles = StyleSheet.create({
   incomeBtn: {
     backgroundColor: '#F0FFF4',
   },
+  projectBtn: {
+    backgroundColor: '#F0EEFF',
+  },
   popupLabel: {
     fontSize: 14,
     fontWeight: '600',
@@ -262,6 +280,7 @@ export default function TabLayout() {
       <Tabs.Screen name="index" options={{ title: t('dashboard'), headerShown: false }} />
       <Tabs.Screen name="transactions" options={{ title: t('transactions'), headerShown: false }} />
       <Tabs.Screen name="categories" options={{ title: t('categories'), headerShown: false }} />
+      <Tabs.Screen name="projects" options={{ title: t('projects'), headerShown: false }} />
       <Tabs.Screen name="charts" options={{ title: t('charts'), headerShown: false }} />
     </Tabs>
   );

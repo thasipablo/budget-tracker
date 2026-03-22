@@ -41,6 +41,34 @@ export default function RootLayout() {
           name="category/[id]"
           options={{ title: 'Category', presentation: 'modal' }}
         />
+        <Stack.Screen
+          name="project/[id]"
+          options={{ title: 'Project', presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="project-detail/[id]"
+          options={{ title: 'Project' }}
+        />
+        <Stack.Screen
+          name="phase/[id]"
+          options={{ title: 'Phase', presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="phase-detail/[id]"
+          options={{ title: 'Phase' }}
+        />
+        <Stack.Screen
+          name="project-expense/[id]"
+          options={{ title: 'Expense', presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="project-transfer/[id]"
+          options={{ title: 'Transfer', presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="project-category/[id]"
+          options={{ title: 'Category', presentation: 'modal' }}
+        />
       </Stack>
     </I18nProvider>
   );
