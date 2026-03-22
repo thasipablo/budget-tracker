@@ -14,10 +14,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getProjectById } from '../../src/db/projects';
 import { getPhasesByProject, swapPhaseOrder, deletePhase } from '../../src/db/phases';
 import { getTransfersByProject, deleteProjectTransfer } from '../../src/db/projectTransfers';
+import { getCategoriesByProjectId, deleteCategory } from '../../src/db/categories';
 import { ProgressBar } from '../../src/components/ProgressBar';
 import { PhaseCard } from '../../src/components/PhaseCard';
 import { useI18n } from '../../src/i18n';
-import type { Project, Phase, ProjectTransfer } from '../../src/types';
+import type { Project, Phase, ProjectTransfer, Category } from '../../src/types';
 
 export default function ProjectDetailScreen() {
   const { t } = useI18n();
@@ -28,15 +29,18 @@ export default function ProjectDetailScreen() {
   const [project, setProject] = useState<Project | null>(null);
   const [phases, setPhases] = useState<Phase[]>([]);
   const [transfers, setTransfers] = useState<ProjectTransfer[]>([]);
+  const [projectCategories, setProjectCategories] = useState<Category[]>([]);
   const loadAll = useCallback(async () => {
-    const [proj, phs, trs] = await Promise.all([
+    const [proj, phs, trs, cats] = await Promise.all([
       getProjectById(projectId),
       getPhasesByProject(projectId),
       getTransfersByProject(projectId),
+      getCategoriesByProjectId(projectId),
     ]);
     setProject(proj);
     setPhases(phs);
     setTransfers(trs);
+    setProjectCategories(cats);
   }, [projectId]);
 
   useFocusEffect(useCallback(() => { loadAll(); }, [loadAll]));
@@ -145,9 +149,7 @@ export default function ProjectDetailScreen() {
         <View style={styles.heroStats}>
           <View style={styles.heroStat}>
             <Text style={styles.heroStatLabel}>{t('totalBudget')}</Text>
-            <Text style={styles.heroStatValue}>
-              {budget != null ? fmt(budget) : t('noBudget')}
-            </Text>
+            <Text style={styles.heroStatValue}>{fmt(budget ?? 0)}</Text>
           </View>
           <View style={styles.heroStatDivider} />
           <View style={styles.heroStat}>
@@ -162,16 +164,35 @@ export default function ProjectDetailScreen() {
             </Text>
           </View>
         </View>
+
+        {/* Fund Project action */}
+        <TouchableOpacity
+          style={styles.fundBtn}
+          onPress={() => router.push(`/project-transfer/new?projectId=${projectId}`)}
+        >
+          <Ionicons name="arrow-down-circle" size={17} color="#34C759" />
+          <Text style={styles.fundBtnText}>{t('newTransfer')}</Text>
+        </TouchableOpacity>
       </View>
 
       {/* ── Progress bar ── */}
-      {budget != null && (
+      {budget != null && budget > 0 && (
         <View style={styles.progressStrip}>
           <ProgressBar progress={progress} color={project.color} height={6} />
-          {isOverBudget && (
-            <Text style={[styles.overBudgetLabel, { color: '#FF3B30' }]}>
-              {t('overBudget')}
-            </Text>
+          {isOverBudget ? (
+            <View style={styles.overRowStrip}>
+              <Ionicons name="warning" size={12} color="#FF3B30" />
+              <Text style={[styles.overBudgetLabel, { color: '#FF3B30' }]}>
+                {t('overBy' as any)} {fmt(spent - budget)}
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.overRowStrip}>
+              <Ionicons name="checkmark-circle" size={12} color="#34C759" />
+              <Text style={[styles.overBudgetLabel, { color: '#34C759' }]}>
+                {t('remaining' as any)} {fmt(budget - spent)}
+              </Text>
+            </View>
           )}
         </View>
       )}
@@ -231,13 +252,6 @@ export default function ProjectDetailScreen() {
               </View>
             )}
           </View>
-          <TouchableOpacity
-            style={styles.addPillGreen}
-            onPress={() => router.push(`/project-transfer/new?projectId=${projectId}`)}
-          >
-            <Ionicons name="add" size={16} color="#34C759" />
-            <Text style={styles.addPillGreenText}>{t('fundProject')}</Text>
-          </TouchableOpacity>
         </View>
 
         {transfers.length === 0 ? (
@@ -268,6 +282,45 @@ export default function ProjectDetailScreen() {
                   <Ionicons name="trash-outline" size={17} color="#FF3B30" />
                 </TouchableOpacity>
               </View>
+            ))}
+          </View>
+        )}
+
+        {/* ── Project Categories ── */}
+        <View style={[styles.sectionRow, { marginTop: 28 }]}>
+          <View style={styles.sectionLeft}>
+            <Text style={styles.sectionTitle}>{t('projectCategories')}</Text>
+            {projectCategories.length > 0 && (
+              <View style={styles.countBadge}>
+                <Text style={styles.countText}>{projectCategories.length}</Text>
+              </View>
+            )}
+          </View>
+          <TouchableOpacity
+            style={[styles.addPill, { backgroundColor: project.color + '18' }]}
+            onPress={() => router.push(`/project-category/new?projectId=${projectId}`)}
+          >
+            <Ionicons name="add" size={16} color={project.color} />
+            <Text style={[styles.addPillText, { color: project.color }]}>{t('newProjectCategory')}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {projectCategories.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Ionicons name="pricetag-outline" size={28} color="#C7C7CC" />
+            <Text style={styles.emptyCardText}>{t('noCategories')}</Text>
+          </View>
+        ) : (
+          <View style={styles.catGrid}>
+            {projectCategories.map((cat) => (
+              <TouchableOpacity
+                key={cat.id}
+                style={[styles.catChip, { backgroundColor: cat.color + '18', borderColor: cat.color + '40' }]}
+                onPress={() => router.push(`/project-category/${cat.id}?projectId=${projectId}`)}
+              >
+                <Text style={styles.catIcon}>{cat.icon}</Text>
+                <Text style={[styles.catName, { color: cat.color }]}>{cat.name}</Text>
+              </TouchableOpacity>
             ))}
           </View>
         )}
@@ -366,7 +419,23 @@ const styles = StyleSheet.create({
 
   /* Progress strip */
   progressStrip: { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: '#FFFFFF', gap: 4 },
-  overBudgetLabel: { fontSize: 12, fontWeight: '600', textAlign: 'right' },
+  overRowStrip: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 4 },
+  overBudgetLabel: { fontSize: 12, fontWeight: '600' },
+
+  /* Fund button in header */
+  fundBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: '#34C75914',
+    borderWidth: 1,
+    borderColor: '#34C75930',
+  },
+  fundBtnText: { fontSize: 14, fontWeight: '600', color: '#34C759' },
 
   /* Section headers */
   sectionRow: {
