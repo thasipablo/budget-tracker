@@ -17,10 +17,9 @@ interface Props {
   onPress: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  onDelete: () => void;
 }
 
-export function PhaseCard({ phase, isFirst, isLast, onPress, onMoveUp, onMoveDown, onDelete }: Props) {
+export function PhaseCard({ phase, isFirst, isLast, onPress, onMoveUp, onMoveDown }: Props) {
   const { t } = useI18n();
   const spent = phase.total_spent ?? 0;
   const budget = phase.budget;
@@ -55,7 +54,7 @@ export function PhaseCard({ phase, isFirst, isLast, onPress, onMoveUp, onMoveDow
             </Text>
           )}
           <Text style={styles.stat}>
-            {'· '}{phase.expense_count ?? 0} items
+            {'· '}{phase.expense_count ?? 0} {t('items')}
           </Text>
         </View>
 
@@ -138,13 +137,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   arrowDisabled: { backgroundColor: '#FAFAFA' },
-  deleteBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    backgroundColor: '#FFF0F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 4,
-  },
 });

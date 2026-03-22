@@ -61,13 +61,25 @@ export default function ProjectCategoryModal() {
       Alert.alert(t('missingName'), t('missingNameMsg'));
       return;
     }
+    if (isNew) {
+      const projectIdNum = Number(projectId);
+      if (!projectId || Number.isNaN(projectIdNum)) {
+        Alert.alert(t('invalidProject'), t('invalidProjectMsg'));
+        router.back();
+        return;
+      }
+      setSaving(true);
+      try {
+        await insertCategory(name.trim(), 'expense', color, icon, projectIdNum);
+        router.back();
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
     setSaving(true);
     try {
-      if (isNew) {
-        await insertCategory(name.trim(), 'expense', color, icon, Number(projectId));
-      } else {
-        await updateCategory(Number(id), name.trim(), color, icon);
-      }
+      await updateCategory(Number(id), name.trim(), color, icon);
       router.back();
     } finally {
       setSaving(false);

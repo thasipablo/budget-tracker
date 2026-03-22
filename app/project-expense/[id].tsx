@@ -60,26 +60,46 @@ export default function ProjectExpenseModal() {
       Alert.alert(t('invalidAmount'), t('invalidAmountMsg'));
       return;
     }
+    if (isNew) {
+      const parsedPhaseId = Number(phaseId);
+      const parsedProjectId = Number(projectId);
+      if (!phaseId || Number.isNaN(parsedPhaseId)) {
+        Alert.alert(t('invalidPhase'), t('invalidPhaseMsg'), [
+          { text: t('ok'), onPress: () => router.back() },
+        ]);
+        return;
+      }
+      if (!projectId || Number.isNaN(parsedProjectId)) {
+        Alert.alert(t('invalidProject'), t('invalidProjectMsg'), [
+          { text: t('ok'), onPress: () => router.back() },
+        ]);
+        return;
+      }
+      setSaving(true);
+      try {
+        await insertProjectExpense(
+          parsedPhaseId,
+          parsedProjectId,
+          parsed,
+          date,
+          selectedCategoryId,
+          note.trim() || undefined
+        );
+        router.back();
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
     setSaving(true);
     try {
-      if (isNew) {
-        await insertProjectExpense(
-          Number(phaseId),
-          Number(projectId),
-          parsed,
-          date,
-          selectedCategoryId,
-          note.trim() || undefined
-        );
-      } else {
-        await updateProjectExpense(
-          Number(id),
-          parsed,
-          date,
-          selectedCategoryId,
-          note.trim() || undefined
-        );
-      }
+      await updateProjectExpense(
+        Number(id),
+        parsed,
+        date,
+        selectedCategoryId,
+        note.trim() || undefined
+      );
       router.back();
     } finally {
       setSaving(false);

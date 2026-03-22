@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 import { useLocalSearchParams, router, Stack, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getPhaseById } from '../../src/db/phases';
-import { getExpensesByPhase, deleteProjectExpense } from '../../src/db/projectExpenses';
+import { getExpensesByPhase } from '../../src/db/projectExpenses';
 import { ProgressBar } from '../../src/components/ProgressBar';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useI18n } from '../../src/i18n';
@@ -38,27 +38,13 @@ export default function PhaseDetailScreen() {
 
   useFocusEffect(useCallback(() => { loadAll(); }, [loadAll]));
 
-  const handleDeleteExpense = (expense: ProjectExpense) => {
-    Alert.alert(t('deleteExpense'), t('deleteExpenseMsg'), [
-      { text: t('cancel'), style: 'cancel' },
-      {
-        text: t('delete'),
-        style: 'destructive',
-        onPress: async () => {
-          await deleteProjectExpense(expense.id);
-          await loadAll();
-        },
-      },
-    ]);
-  };
-
   const spent = phase?.total_spent ?? 0;
   const budget = phase?.budget;
   const progress = budget ? spent / budget : 0;
   const overBudget = budget != null && spent > budget;
 
   const formatCurrency = (v: number) =>
-    v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    v.toLocaleString(undefined, { style: 'currency', currency: 'USD' });
 
   return (
     <>
@@ -74,7 +60,7 @@ export default function PhaseDetailScreen() {
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Ionicons name="chevron-back" size={17} color="#3C3C43" />
-              <Text style={styles.headerBackLabel}>Project</Text>
+              <Text style={styles.headerBackLabel}>{t('project')}</Text>
             </TouchableOpacity>
             <View style={styles.headerCenter}>
               <Text style={styles.headerTitle} numberOfLines={1}>{phase?.name ?? '…'}</Text>
@@ -83,7 +69,7 @@ export default function PhaseDetailScreen() {
                 const color = STATUS_COLOR[s];
                 return (
                   <View style={[styles.statusBadge, { backgroundColor: color + '20' }]}>
-                    <Text style={[styles.statusText, { color }]}>{s.charAt(0).toUpperCase() + s.slice(1)}</Text>
+                    <Text style={[styles.statusText, { color }]}>{t(s)}</Text>
                   </View>
                 );
               })()}
@@ -336,7 +322,4 @@ const styles = StyleSheet.create({
   expenseRight: { alignItems: 'flex-end', marginRight: 4 },
   expenseAmount: { fontSize: 16, fontWeight: '700', color: '#FF3B30' },
   expenseDate: { fontSize: 12, color: '#8E8E93', marginTop: 2 },
-  deleteRowBtn: {
-    padding: 4,
-  },
 });
