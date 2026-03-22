@@ -161,7 +161,6 @@ export default function PhaseDetailScreen() {
                     `/project-expense/${expense.id}?phaseId=${phaseId}&projectId=${expense.project_id}`
                   )
                 }
-                onLongPress={() => handleDeleteExpense(expense)}
               >
                 <View
                   style={[
@@ -185,6 +184,13 @@ export default function PhaseDetailScreen() {
                   <Text style={styles.expenseAmount}>{formatCurrency(expense.amount)}</Text>
                   <Text style={styles.expenseDate}>{expense.date}</Text>
                 </View>
+                <TouchableOpacity
+                  style={styles.deleteRowBtn}
+                  onPress={() => handleDeleteExpense(expense)}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Ionicons name="trash-outline" size={16} color="#FF3B30" />
+                </TouchableOpacity>
               </TouchableOpacity>
             ))}
           </View>
@@ -310,7 +316,10 @@ const styles = StyleSheet.create({
   expenseInfo: { flex: 1 },
   catName: { fontSize: 15, fontWeight: '500', color: '#000000' },
   expenseNote: { fontSize: 13, color: '#8E8E93', marginTop: 2 },
-  expenseRight: { alignItems: 'flex-end' },
+  expenseRight: { alignItems: 'flex-end', marginRight: 4 },
   expenseAmount: { fontSize: 16, fontWeight: '700', color: '#FF3B30' },
   expenseDate: { fontSize: 12, color: '#8E8E93', marginTop: 2 },
+  deleteRowBtn: {
+    padding: 4,
+  },
 });

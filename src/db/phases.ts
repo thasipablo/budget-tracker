@@ -75,3 +75,11 @@ export async function swapPhaseOrder(idA: number, idB: number): Promise<void> {
   await db.runAsync('UPDATE phases SET order_index = ? WHERE id = ?', [phaseB.order_index, idA]);
   await db.runAsync('UPDATE phases SET order_index = ? WHERE id = ?', [phaseA.order_index, idB]);
 }
+
+export async function activatePhaseIfAwaiting(phaseId: number): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync(
+    "UPDATE phases SET status = 'active' WHERE id = ? AND status = 'awaiting'",
+    [phaseId]
+  );
+}
