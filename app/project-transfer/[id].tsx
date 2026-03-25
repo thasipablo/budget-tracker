@@ -29,9 +29,16 @@ export default function ProjectTransferModal() {
       Alert.alert(t('invalidAmount'), t('invalidAmountMsg'));
       return;
     }
+    const parsedProjectId = Number(projectId);
+    if (!projectId || Number.isNaN(parsedProjectId)) {
+      Alert.alert(t('invalidProject'), t('invalidProjectMsg'), [
+        { text: t('ok'), onPress: () => router.back() },
+      ]);
+      return;
+    }
     setSaving(true);
     try {
-      await insertProjectTransfer(Number(projectId), parsed, date, note.trim() || undefined);
+      await insertProjectTransfer(parsedProjectId, parsed, date, note.trim() || undefined);
       router.back();
     } finally {
       setSaving(false);

@@ -1,5 +1,5 @@
 import { getDatabase } from './database';
-import type { Phase } from '../types';
+import type { Phase, PhaseStatus } from '../types';
 
 const AGGREGATES = `
   COALESCE((SELECT SUM(pe.amount) FROM project_expenses pe WHERE pe.phase_id = ph.id), 0) AS total_spent,
@@ -28,7 +28,7 @@ export async function insertPhase(
   budget?: number,
   start_date?: string,
   end_date?: string,
-  status: string = 'awaiting'
+  status: PhaseStatus = 'awaiting'
 ): Promise<number> {
   const db = await getDatabase();
   const maxOrder = await db.getFirstAsync<{ max: number | null }>(
@@ -49,7 +49,7 @@ export async function updatePhase(
   budget?: number,
   start_date?: string,
   end_date?: string,
-  status: string = 'awaiting'
+  status: PhaseStatus = 'awaiting'
 ): Promise<void> {
   const db = await getDatabase();
   await db.runAsync(

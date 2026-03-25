@@ -150,6 +150,20 @@ export const translations = {
     // Project categories
     projectCategories: 'Project Categories',
     newProjectCategory: 'New Category',
+
+    // Date picker
+    selectDate: 'Select Date',
+    clear: 'Clear',
+    doneAction: 'Done',
+
+    // Misc
+    project: 'Project',
+    items: 'Items',
+    ok: 'OK',
+    invalidProject: 'Invalid Project',
+    invalidProjectMsg: 'Please try again.',
+    invalidPhase: 'Invalid Phase',
+    invalidPhaseMsg: 'Please try again.',
   },
 
   fr: {
@@ -303,6 +317,20 @@ export const translations = {
     // Project categories
     projectCategories: 'Catégories du projet',
     newProjectCategory: 'Nouvelle catégorie',
+
+    // Date picker
+    selectDate: 'Sélectionner une date',
+    clear: 'Effacer',
+    doneAction: 'Terminé',
+
+    // Misc
+    project: 'Projet',
+    items: 'Éléments',
+    ok: 'OK',
+    invalidProject: 'Projet invalide',
+    invalidProjectMsg: 'Veuillez réessayer.',
+    invalidPhase: 'Phase invalide',
+    invalidPhaseMsg: 'Veuillez réessayer.',
   },
 } as const;
 
