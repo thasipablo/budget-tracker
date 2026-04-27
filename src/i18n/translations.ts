@@ -164,6 +164,15 @@ export const translations = {
     invalidProjectMsg: 'Please try again.',
     invalidPhase: 'Invalid Phase',
     invalidPhaseMsg: 'Please try again.',
+
+    // Authentication
+    setPinTitle: 'Create a PIN',
+    confirmPinTitle: 'Confirm your PIN',
+    unlockTitle: 'Enter your PIN',
+    pinHint: 'Choose a 4-digit PIN to secure the app',
+    pinMismatch: "PINs don't match. Please try again.",
+    wrongPin: 'Incorrect PIN. Please try again.',
+    useBiometrics: 'Use Face ID / Touch ID',
   },
 
   fr: {
@@ -331,6 +340,15 @@ export const translations = {
     invalidProjectMsg: 'Veuillez réessayer.',
     invalidPhase: 'Phase invalide',
     invalidPhaseMsg: 'Veuillez réessayer.',
+
+    // Authentication
+    setPinTitle: 'Créer un code PIN',
+    confirmPinTitle: 'Confirmer votre code PIN',
+    unlockTitle: 'Saisissez votre code PIN',
+    pinHint: "Choisissez un code PIN à 4 chiffres pour sécuriser l'application",
+    pinMismatch: 'Les codes PIN ne correspondent pas. Veuillez réessayer.',
+    wrongPin: 'Code PIN incorrect. Veuillez réessayer.',
+    useBiometrics: 'Utiliser Face ID / Touch ID',
   },
 } as const;
 

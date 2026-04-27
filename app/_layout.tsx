@@ -4,19 +4,47 @@ import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { initDatabase } from '../src/db/database';
 import { I18nProvider } from '../src/i18n';
+import { hasPin } from '../src/auth/authStore';
+import PinSetup from '../src/components/PinSetup';
+import PinUnlock from '../src/components/PinUnlock';
+
+type AuthState = 'loading' | 'setup' | 'locked' | 'unlocked';
 
 export default function RootLayout() {
-  const [ready, setReady] = useState(false);
+  const [authState, setAuthState] = useState<AuthState>('loading');
 
   useEffect(() => {
-    initDatabase().then(() => setReady(true));
+    async function init() {
+      await initDatabase();
+      const pinSet = await hasPin();
+      setAuthState(pinSet ? 'locked' : 'setup');
+    }
+    init();
   }, []);
 
-  if (!ready) {
+  if (authState === 'loading') {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color="#007AFF" />
       </View>
+    );
+  }
+
+  if (authState === 'setup') {
+    return (
+      <I18nProvider>
+        <StatusBar style="dark" backgroundColor="#F2F2F7" />
+        <PinSetup onComplete={() => setAuthState('unlocked')} />
+      </I18nProvider>
+    );
+  }
+
+  if (authState === 'locked') {
+    return (
+      <I18nProvider>
+        <StatusBar style="dark" backgroundColor="#F2F2F7" />
+        <PinUnlock onUnlocked={() => setAuthState('unlocked')} />
+      </I18nProvider>
     );
   }
 
